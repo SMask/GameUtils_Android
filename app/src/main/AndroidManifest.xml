@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.EnergyBlastActivity"
+            android:name=".module.energyBlast.EnergyBlastActivity"
             android:exported="false"
             android:label="@string/title_activity_energy_blast"
             android:theme="@style/Theme.GameUtils_Android" />

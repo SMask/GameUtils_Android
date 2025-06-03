@@ -3,4 +3,8 @@
     <string name="app_name">GameUtils_Android</string>
     <string name="title_activity_energy_blast">某不稳定的气功波</string>
 
+    <!-- 通用 -->
+    <string name="equipment_add">添加装备</string>
+    <string name="calculate_best_combination">计算最佳组合</string>
+
 </resources>
