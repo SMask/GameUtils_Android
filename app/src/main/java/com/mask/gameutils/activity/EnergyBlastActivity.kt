@@ -1,5 +1,6 @@
-package com.mask.gameutils
+package com.mask.gameutils.activity
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,15 +13,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mask.gameutils.ui.theme.GameUtils_AndroidTheme
+import com.mask.gameutils.utils.ActivityUtils
 
-class MainActivity : ComponentActivity() {
+class EnergyBlastActivity : ComponentActivity() {
+
+    companion object {
+        fun startActivity(context: Context) {
+            ActivityUtils.startActivity(context, EnergyBlastActivity::class.java)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             GameUtils_AndroidTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+                    EnergyBlastLayout(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -30,18 +41,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun EnergyBlastLayoutPreview() {
+    GameUtils_AndroidTheme {
+        EnergyBlastLayout("Android")
+    }
+}
+
+@Composable
+fun EnergyBlastLayout(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
         modifier = modifier
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GameUtils_AndroidTheme {
-        Greeting("Android")
-    }
 }
