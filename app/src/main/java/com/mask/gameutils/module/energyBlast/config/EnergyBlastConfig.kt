@@ -1,5 +1,7 @@
 package com.mask.gameutils.module.energyBlast.config
 
+import androidx.compose.ui.graphics.Color
+
 /**
  * 装备类型
  */
@@ -15,8 +17,9 @@ enum class EnergyBlastEquipmentType(
 /**
  * 装备词条
  */
-interface IEnergyBlastAffix {
-    fun getTitle(): String
+sealed interface IEnergyBlastAffix {
+    fun getAffixTitle(): String
+    fun getAffixTextColor(): Color
 }
 
 /**
@@ -25,7 +28,8 @@ interface IEnergyBlastAffix {
 enum class EnergyBlastStatAffix(
     val title: String, // 标题
     val value: Int, // 数值
-    val max: Int // 最大值
+    val max: Int, // 最大值
+    val textColor: Color = Color.Black // 文本颜色
 ) : IEnergyBlastAffix {
     HP("总生命", 25, Int.MAX_VALUE),
     ATTACK("总攻击", 25, Int.MAX_VALUE),
@@ -44,20 +48,25 @@ enum class EnergyBlastStatAffix(
         }
     }
 
-    override fun getTitle(): String {
+    override fun getAffixTitle(): String {
         return title
+    }
+
+    override fun getAffixTextColor(): Color {
+        return textColor
     }
 }
 
 /**
  * 装备词条 技能
  */
-enum class EnergyBlastStatSkill(
+enum class EnergyBlastSkillAffix(
     val title: String, // 标题
     val value: Int, // 数值
-    val max: Int // 最大值
+    val max: Int, // 最大值
+    val textColor: Color = Color(0xFFCC00FF) // 文本颜色
 ) : IEnergyBlastAffix {
-    HEALING_BODY(" 治愈之体", 1, 1),
+    HEALING_BODY("治愈之体", 1, 1),
 
     WATER_0("水系掌控", 1, 1),
     WATER_1("水爆", 1, 1),
@@ -78,12 +87,16 @@ enum class EnergyBlastStatSkill(
     WOOD_4("木神附体", 1, 1);
 
     companion object {
-        fun getInstance(title: String): EnergyBlastStatSkill? {
+        fun getInstance(title: String): EnergyBlastSkillAffix? {
             return entries.firstOrNull { it.title == title }
         }
     }
 
-    override fun getTitle(): String {
+    override fun getAffixTitle(): String {
         return title
+    }
+
+    override fun getAffixTextColor(): Color {
+        return textColor
     }
 }

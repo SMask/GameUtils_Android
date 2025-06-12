@@ -22,6 +22,13 @@ object Style {
             color = Color.Gray
         )
 
+        val TITLE = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Medium,
+            fontSize = 16.sp,
+            color = Color.Black
+        )
+
         val CONTENT = TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Medium,

@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 object Dimen {
 
     val buttonHeight = 40.dp
+    val dropdownItemHeight = 30.dp
 
     val padding = 8.dp
     val paddingItem = 32.dp
