@@ -10,7 +10,7 @@ import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
  * Create by lishilin on 2025-06-04
  */
 data class EnergyBlastEquipmentVo(
-    val id: Long, // 唯一标识（目前用时间戳）
+    val id: Long = System.currentTimeMillis(), // 唯一标识（目前用时间戳）
     val type: EnergyBlastEquipmentType, // 装备类型
     val affixList: List<IEnergyBlastAffix>, // 词条列表
     val mainAffix: EnergyBlastStatAffix? = null, // 主词条（只有戒指有，数值是普通词条的两倍）

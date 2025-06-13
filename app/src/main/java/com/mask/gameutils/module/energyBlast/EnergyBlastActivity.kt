@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,10 +40,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mask.gameutils.R
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixPlaceholder
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastSkillAffix
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastStatAffix
 import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
+import com.mask.gameutils.module.energyBlast.viewmodel.EnergyBlastViewModel
+import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
 import com.mask.gameutils.ui.ButtonNormal
 import com.mask.gameutils.ui.theme.Dimen
 import com.mask.gameutils.ui.theme.GameUtils_AndroidTheme
@@ -69,7 +76,8 @@ class EnergyBlastActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        viewModel = viewModel()
                     )
                 }
             }
@@ -84,14 +92,15 @@ fun EnergyBlastLayoutPreview() {
         EnergyBlastLayout(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
+            viewModel = viewModel()
         )
     }
 }
 
 @Composable
-fun EnergyBlastLayout(modifier: Modifier = Modifier) {
-    var isShowDialog by remember { mutableStateOf(true) }
+fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modifier) {
+    var isShowAddDialog by remember { mutableStateOf(true) }
 
     Column(
         modifier = modifier,
@@ -101,7 +110,7 @@ fun EnergyBlastLayout(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            columns = GridCells.Fixed(6)
+            columns = GridCells.Fixed(5)
         ) {
 
         }
@@ -115,7 +124,7 @@ fun EnergyBlastLayout(modifier: Modifier = Modifier) {
                     .weight(1f),
                 textResId = R.string.equipment_add,
                 onClick = {
-                    isShowDialog = true
+                    isShowAddDialog = true
                 })
             ButtonNormal(
                 modifier = Modifier
@@ -127,15 +136,41 @@ fun EnergyBlastLayout(modifier: Modifier = Modifier) {
         }
     }
 
-    if (isShowDialog) {
-        EnergyBlastEquipmentDialog(
-            onDismissRequest = { isShowDialog = false }
+    if (isShowAddDialog) {
+        EnergyBlastEquipmentEditDialog(
+            onDismissRequest = { isShowAddDialog = false },
+            onSave = { equipmentVo ->
+                val msg = StringBuilder()
+                msg.append(equipmentVo.type.title)
+                for (affix in equipmentVo.affixList) {
+                    msg.append(" ")
+                    msg.append(affix.getAffixTitle())
+                }
+                equipmentVo.mainAffix?.let {
+                    msg.append(" ")
+                    msg.append(it.getAffixTitle())
+                }
+                ToastUtils.show(msg.toString())
+            }
         )
     }
 }
 
 @Composable
-fun EnergyBlastEquipmentDialog(onDismissRequest: () -> Unit) {
+fun EnergyBlastEquipmentEditDialog(
+    equipment: EnergyBlastEquipmentVo? = null,
+    onDismissRequest: () -> Unit,
+    onSave: (EnergyBlastEquipmentVo) -> Unit
+) {
+    // 编辑状态管理
+    var type by remember { mutableStateOf(equipment?.type ?: EnergyBlastEquipmentType.WEAPON) }
+    val affixList = remember {
+        equipment?.affixList?.toMutableStateList()
+            ?: MutableList<IEnergyBlastAffix>(EnergyBlastEquipmentType.AFFIX_MAX_NUM) { EnergyBlastAffixPlaceholder.NULL }.toMutableStateList()
+    }
+    var mainAffix by remember { mutableStateOf(equipment?.mainAffix) }
+
+    // UI
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(dismissOnClickOutside = false)
@@ -151,21 +186,65 @@ fun EnergyBlastEquipmentDialog(onDismissRequest: () -> Unit) {
                     .padding(Dimen.padding),
                 verticalArrangement = Arrangement.spacedBy(Dimen.padding)
             ) {
+                // 标题
                 Text(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     style = Style.TextStyle.TITLE,
-                    text = stringResource(R.string.equipment_info)
+                    text = stringResource(if (equipment == null) R.string.equipment_add else R.string.equipment_edit),
                 )
-                EnergyBlastEquipmentDropdownMenu(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(Dimen.dropdownItemHeight)
-                )
+                // 装备类型
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    EnergyBlastEquipmentType.entries.forEach { equipmentType ->
+                        FilterChip(
+                            selected = type == equipmentType,
+                            onClick = { type = equipmentType },
+                            label = {
+                                Text(
+                                    style = Style.TextStyle.CONTENT,
+                                    text = equipmentType.title
+                                )
+                            }
+                        )
+                    }
+                }
+                // 词条列表
+                affixList.forEachIndexed { index, affix ->
+                    EnergyBlastEquipmentDropdownMenu(
+                        affix = affix,
+                        onAffixChange = { affixList[index] = it },
+                        isMainAffix = false,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(Dimen.dropdownItemHeight)
+                    )
+                }
+                // 主词条
+                if (type == EnergyBlastEquipmentType.RING) {
+                    EnergyBlastEquipmentDropdownMenu(
+                        affix = mainAffix ?: EnergyBlastAffixPlaceholder.NULL,
+                        onAffixChange = { mainAffix = it as? EnergyBlastStatAffix },
+                        isMainAffix = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(Dimen.dropdownItemHeight)
+                    )
+                }
+                // 保存
                 ButtonNormal(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    textResId = R.string.equipment_add,
+                    textResId = R.string.save,
                     onClick = {
-                        ToastUtils.show("计算最佳组合")
+                        onSave(
+                            EnergyBlastEquipmentVo(
+                                equipment?.id ?: System.currentTimeMillis(),
+                                type,
+                                affixList,
+                                if (type.hasMainAffix()) mainAffix else null,
+                            )
+                        )
                     })
             }
         }
@@ -173,22 +252,28 @@ fun EnergyBlastEquipmentDialog(onDismissRequest: () -> Unit) {
 }
 
 @Composable
-fun EnergyBlastEquipmentDropdownMenu(modifier: Modifier = Modifier) {
-    var isExpandedDropdownMenu by remember { mutableStateOf(true) }
+fun EnergyBlastEquipmentDropdownMenu(
+    affix: IEnergyBlastAffix,
+    onAffixChange: (IEnergyBlastAffix) -> Unit,
+    isMainAffix: Boolean,
+    modifier: Modifier = Modifier
+) {
+    var isExpandedDropdownMenu by remember { mutableStateOf(false) }
 
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(Dimen.radius))
-                .background(Color.LightGray)
+                .background(if (isMainAffix) Color(0xFFCCCCFF) else Color.LightGray)
                 .clickable { isExpandedDropdownMenu = !isExpandedDropdownMenu },
             horizontalArrangement = Arrangement.Center,
         ) {
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 style = Style.TextStyle.CONTENT,
-                text = "词条信息"
+                color = affix.getAffixTextColor(),
+                text = affix.getAffixTitle()
             )
         }
         Box(
@@ -201,23 +286,27 @@ fun EnergyBlastEquipmentDropdownMenu(modifier: Modifier = Modifier) {
                     .fillMaxHeight(0.4f),
                 expanded = isExpandedDropdownMenu,
                 onDismissRequest = { isExpandedDropdownMenu = false }) {
+                // 属性词条
                 EnergyBlastStatAffix.entries.forEach { statAffix ->
                     EnergyBlastEquipmentDropdownMenuItem(
                         affix = statAffix,
                         onClick = {
                             isExpandedDropdownMenu = false
-                            ToastUtils.show(statAffix.title)
+                            onAffixChange(statAffix)
                         }
                     )
                 }
-                EnergyBlastSkillAffix.entries.forEach { statAffix ->
-                    EnergyBlastEquipmentDropdownMenuItem(
-                        affix = statAffix,
-                        onClick = {
-                            isExpandedDropdownMenu = false
-                            ToastUtils.show(statAffix.title)
-                        }
-                    )
+                // 技能词条
+                if (!isMainAffix) {
+                    EnergyBlastSkillAffix.entries.forEach { skillAffix ->
+                        EnergyBlastEquipmentDropdownMenuItem(
+                            affix = skillAffix,
+                            onClick = {
+                                isExpandedDropdownMenu = false
+                                onAffixChange(skillAffix)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -225,7 +314,7 @@ fun EnergyBlastEquipmentDropdownMenu(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun EnergyBlastEquipmentDropdownMenuItem(modifier: Modifier = Modifier, affix: IEnergyBlastAffix, onClick: (affix: IEnergyBlastAffix) -> Unit) {
+fun EnergyBlastEquipmentDropdownMenuItem(affix: IEnergyBlastAffix, onClick: (affix: IEnergyBlastAffix) -> Unit, modifier: Modifier = Modifier) {
     DropdownMenuItem(
         onClick = { onClick(affix) },
         text = {

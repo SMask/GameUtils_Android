@@ -6,12 +6,21 @@ import androidx.compose.ui.graphics.Color
  * 装备类型
  */
 enum class EnergyBlastEquipmentType(
-    title: String, // 标题
-    priority: Int // 优先级（大的靠前）
+    val title: String, // 标题
+    val priority: Int // 优先级（大的靠前）
 ) {
     WEAPON("武器", 300),
     ARMOR("铠甲", 200),
     RING("戒指", 100)
+    ;
+
+    fun hasMainAffix(): Boolean {
+        return this == RING
+    }
+
+    companion object {
+        const val AFFIX_MAX_NUM = 6 // 最大词条数量
+    }
 }
 
 /**
@@ -20,6 +29,25 @@ enum class EnergyBlastEquipmentType(
 sealed interface IEnergyBlastAffix {
     fun getAffixTitle(): String
     fun getAffixTextColor(): Color
+}
+
+/**
+ * 装备词条 占位
+ */
+enum class EnergyBlastAffixPlaceholder(
+    val title: String, // 标题
+    val textColor: Color = Color.Black // 文本颜色
+) : IEnergyBlastAffix {
+    NULL("请选择")
+    ;
+
+    override fun getAffixTitle(): String {
+        return title
+    }
+
+    override fun getAffixTextColor(): Color {
+        return textColor
+    }
 }
 
 /**
@@ -40,7 +68,8 @@ enum class EnergyBlastStatAffix(
     CRIT_DAMAGE("暴击伤害", 50, Int.MAX_VALUE),
     DAMAGE_WATER("水系伤害", 50, Int.MAX_VALUE),
     DAMAGE_FIRE("火系伤害", 50, Int.MAX_VALUE),
-    DAMAGE_WOOD("木系伤害", 50, Int.MAX_VALUE);
+    DAMAGE_WOOD("木系伤害", 50, Int.MAX_VALUE)
+    ;
 
     companion object {
         fun getInstance(title: String): EnergyBlastStatAffix? {
@@ -84,7 +113,8 @@ enum class EnergyBlastSkillAffix(
     WOOD_1("木斩", 1, 1),
     WOOD_2("木雷击", 1, 1),
     WOOD_3("木林旋风", 1, 1),
-    WOOD_4("木神附体", 1, 1);
+    WOOD_4("木神附体", 1, 1)
+    ;
 
     companion object {
         fun getInstance(title: String): EnergyBlastSkillAffix? {
