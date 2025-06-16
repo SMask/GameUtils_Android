@@ -486,8 +486,13 @@ fun EnergyBlastEquipmentDropdownMenu(
 }
 
 @Composable
-fun EnergyBlastEquipmentDropdownMenuItem(affix: IEnergyBlastAffix, onClick: (affix: IEnergyBlastAffix) -> Unit, modifier: Modifier = Modifier) {
+fun EnergyBlastEquipmentDropdownMenuItem(
+    affix: IEnergyBlastAffix,
+    onClick: (affix: IEnergyBlastAffix) -> Unit,
+    modifier: Modifier = Modifier
+) {
     DropdownMenuItem(
+        modifier = modifier,
         onClick = { onClick(affix) },
         text = {
             Text(
@@ -511,7 +516,7 @@ fun EnergyBlastEquipmentDeleteDialog(
             Text(text = stringResource(R.string.energy_blast_delete_title))
         },
         text = {
-            Text(text = stringResource(R.string.energy_blast_delete_content))
+            Text(text = stringResource(R.string.energy_blast_delete_content, "${equipment.type.title} ${equipment.positionRowColumn}"))
         },
         confirmButton = {
             Button(

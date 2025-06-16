@@ -54,6 +54,7 @@ class EnergyBlastViewModel : ViewModel() {
 
     fun removeEquipment(equipment: EnergyBlastEquipmentVo) {
         _equipmentList.removeAll { it.id == equipment.id }
+        convertList()
         saveList()
     }
 
@@ -77,6 +78,8 @@ class EnergyBlastViewModel : ViewModel() {
             saveExtraAffixNum()
         }
     }
+
+    /************************************************************ S 数据转换 ************************************************************/
 
     private fun transformList() {
         sortList()
@@ -109,6 +112,10 @@ class EnergyBlastViewModel : ViewModel() {
         }
     }
 
+    /************************************************************ E 数据转换 ************************************************************/
+
+    /************************************************************ S 数据存储 ************************************************************/
+
     private fun loadList() {
         sharedPreferences.getString(keyEquipmentList, null)?.let { jsonStr ->
             val type = object : TypeToken<List<EnergyBlastEquipmentVo>>() {}.type
@@ -132,4 +139,7 @@ class EnergyBlastViewModel : ViewModel() {
             putInt(keyExtraAffixNum, _extraAffixNum.intValue)
         }
     }
+
+    /************************************************************ E 数据存储 ************************************************************/
+
 }
