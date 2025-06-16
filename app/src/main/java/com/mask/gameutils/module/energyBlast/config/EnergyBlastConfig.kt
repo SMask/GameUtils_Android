@@ -1,13 +1,17 @@
 package com.mask.gameutils.module.energyBlast.config
 
 import androidx.compose.ui.graphics.Color
+import com.mask.gameutils.ui.theme.Color_Text_EnergyBlast_EquipmentType
+import com.mask.gameutils.ui.theme.Color_Text_EnergyBlast_Affix_Skill
+import com.mask.gameutils.ui.theme.Color_Text_EnergyBlast_Affix_Stat
 
 /**
  * 装备类型
  */
 enum class EnergyBlastEquipmentType(
     val title: String, // 标题
-    val priority: Int // 优先级（大的靠前）
+    val priority: Int, // 优先级（大的靠前）
+    val textColor: Color = Color_Text_EnergyBlast_EquipmentType // 文本颜色
 ) {
     WEAPON("武器", 300),
     ARMOR("铠甲", 200),
@@ -38,7 +42,7 @@ enum class EnergyBlastStatAffix(
     val title: String, // 标题
     val value: Int, // 数值
     val max: Int, // 最大值
-    val textColor: Color = Color.Black // 文本颜色
+    val textColor: Color = Color_Text_EnergyBlast_Affix_Stat // 文本颜色
 ) : IEnergyBlastAffix {
     HP("总生命", 25, Int.MAX_VALUE),
     ATTACK("总攻击", 25, Int.MAX_VALUE),
@@ -74,7 +78,7 @@ enum class EnergyBlastSkillAffix(
     val title: String, // 标题
     val value: Int, // 数值
     val max: Int, // 最大值
-    val textColor: Color = Color(0xFFCC00FF) // 文本颜色
+    val textColor: Color = Color_Text_EnergyBlast_Affix_Skill // 文本颜色
 ) : IEnergyBlastAffix {
     HEALING_BODY("治愈之体", 1, 1),
 

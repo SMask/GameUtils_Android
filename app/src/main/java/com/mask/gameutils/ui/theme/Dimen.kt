@@ -16,4 +16,6 @@ object Dimen {
     val paddingItem = 32.dp
     val radius = 16.dp
 
+    val strokeWidth = 0.5.dp
+
 }
