@@ -32,25 +32,6 @@ sealed interface IEnergyBlastAffix {
 }
 
 /**
- * 装备词条 占位
- */
-enum class EnergyBlastAffixPlaceholder(
-    val title: String, // 标题
-    val textColor: Color = Color.Black // 文本颜色
-) : IEnergyBlastAffix {
-    NULL("请选择")
-    ;
-
-    override fun getAffixTitle(): String {
-        return title
-    }
-
-    override fun getAffixTextColor(): Color {
-        return textColor
-    }
-}
-
-/**
  * 装备词条 属性
  */
 enum class EnergyBlastStatAffix(

@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +43,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mask.gameutils.R
-import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixPlaceholder
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastSkillAffix
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastStatAffix
@@ -163,10 +163,10 @@ fun EnergyBlastEquipmentEditDialog(
     onSave: (EnergyBlastEquipmentVo) -> Unit
 ) {
     // 编辑状态管理
-    var type by remember { mutableStateOf(equipment?.type ?: EnergyBlastEquipmentType.WEAPON) }
-    val affixList = remember {
+    var type by remember { mutableStateOf(equipment?.type ?: EnergyBlastEquipmentType.RING) }
+    val affixList: SnapshotStateList<IEnergyBlastAffix?> = remember {
         equipment?.affixList?.toMutableStateList()
-            ?: MutableList<IEnergyBlastAffix>(EnergyBlastEquipmentType.AFFIX_MAX_NUM) { EnergyBlastAffixPlaceholder.NULL }.toMutableStateList()
+            ?: MutableList<IEnergyBlastAffix?>(EnergyBlastEquipmentType.AFFIX_MAX_NUM) { null }.toMutableStateList()
     }
     var mainAffix by remember { mutableStateOf(equipment?.mainAffix) }
 
@@ -210,6 +210,17 @@ fun EnergyBlastEquipmentEditDialog(
                         )
                     }
                 }
+                // 主词条
+                if (type == EnergyBlastEquipmentType.RING) {
+                    EnergyBlastEquipmentDropdownMenu(
+                        affix = mainAffix,
+                        onAffixChange = { mainAffix = it as? EnergyBlastStatAffix },
+                        isMainAffix = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(Dimen.dropdownItemHeight)
+                    )
+                }
                 // 词条列表
                 affixList.forEachIndexed { index, affix ->
                     EnergyBlastEquipmentDropdownMenu(
@@ -221,27 +232,24 @@ fun EnergyBlastEquipmentEditDialog(
                             .height(Dimen.dropdownItemHeight)
                     )
                 }
-                // 主词条
-                if (type == EnergyBlastEquipmentType.RING) {
-                    EnergyBlastEquipmentDropdownMenu(
-                        affix = mainAffix ?: EnergyBlastAffixPlaceholder.NULL,
-                        onAffixChange = { mainAffix = it as? EnergyBlastStatAffix },
-                        isMainAffix = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(Dimen.dropdownItemHeight)
-                    )
-                }
                 // 保存
                 ButtonNormal(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    modifier = Modifier.fillMaxWidth(),
                     textResId = R.string.save,
                     onClick = {
+                        if (type.hasMainAffix() && mainAffix == null) {
+                            ToastUtils.show(R.string.energy_blast_main_affix_null)
+                            return@ButtonNormal
+                        }
+                        if (affixList.any { it == null }) {
+                            ToastUtils.show(R.string.energy_blast_affix_null)
+                            return@ButtonNormal
+                        }
                         onSave(
                             EnergyBlastEquipmentVo(
                                 equipment?.id ?: System.currentTimeMillis(),
                                 type,
-                                affixList,
+                                affixList.filterNotNull(),
                                 if (type.hasMainAffix()) mainAffix else null,
                             )
                         )
@@ -253,7 +261,7 @@ fun EnergyBlastEquipmentEditDialog(
 
 @Composable
 fun EnergyBlastEquipmentDropdownMenu(
-    affix: IEnergyBlastAffix,
+    affix: IEnergyBlastAffix?,
     onAffixChange: (IEnergyBlastAffix) -> Unit,
     isMainAffix: Boolean,
     modifier: Modifier = Modifier
@@ -272,8 +280,8 @@ fun EnergyBlastEquipmentDropdownMenu(
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 style = Style.TextStyle.CONTENT,
-                color = affix.getAffixTextColor(),
-                text = affix.getAffixTitle()
+                color = affix?.getAffixTextColor() ?: Color.Gray,
+                text = affix?.getAffixTitle() ?: stringResource(R.string.please_select)
             )
         }
         Box(
