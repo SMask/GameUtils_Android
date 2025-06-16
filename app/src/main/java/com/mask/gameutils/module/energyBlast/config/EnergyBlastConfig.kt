@@ -1,9 +1,16 @@
 package com.mask.gameutils.module.energyBlast.config
 
 import androidx.compose.ui.graphics.Color
-import com.mask.gameutils.ui.theme.Color_Text_EnergyBlast_EquipmentType
 import com.mask.gameutils.ui.theme.Color_Text_EnergyBlast_Affix_Skill
 import com.mask.gameutils.ui.theme.Color_Text_EnergyBlast_Affix_Stat
+import com.mask.gameutils.ui.theme.Color_Text_EnergyBlast_EquipmentType
+
+/**
+ * 配置
+ */
+object EnergyBlastConfig {
+    const val GRID_COLUMN_NUM = 5 // 网格列数
+}
 
 /**
  * 装备类型

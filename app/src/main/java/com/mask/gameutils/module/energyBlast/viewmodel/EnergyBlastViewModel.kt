@@ -2,6 +2,7 @@ package com.mask.gameutils.module.energyBlast.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastConfig
 import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
 
 /**
@@ -16,7 +17,7 @@ class EnergyBlastViewModel : ViewModel() {
 
     fun addEquipment(equipment: EnergyBlastEquipmentVo) {
         _equipmentList.add(equipment)
-        sortList()
+        transformList()
     }
 
     fun removeEquipment(equipment: EnergyBlastEquipmentVo) {
@@ -28,7 +29,12 @@ class EnergyBlastViewModel : ViewModel() {
         if (index >= 0) {
             _equipmentList[index] = equipment
         }
+        transformList()
+    }
+
+    private fun transformList() {
         sortList()
+        convertList()
     }
 
     private fun sortList() {
@@ -46,6 +52,14 @@ class EnergyBlastViewModel : ViewModel() {
             } else {
                 leftId.compareTo(rightId)
             }
+        }
+    }
+
+    private fun convertList() {
+        _equipmentList.forEachIndexed { index, equipment ->
+            val row = index / EnergyBlastConfig.GRID_COLUMN_NUM
+            val column = index % EnergyBlastConfig.GRID_COLUMN_NUM
+            equipment.positionRowColumn = "${row + 1}-${column + 1}"
         }
     }
 }

@@ -50,10 +50,12 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mask.gameutils.R
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastConfig
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastSkillAffix
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastStatAffix
 import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
+import com.mask.gameutils.module.energyBlast.utils.EnergyBlastUtils
 import com.mask.gameutils.module.energyBlast.viewmodel.EnergyBlastViewModel
 import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
 import com.mask.gameutils.ui.ButtonNormal
@@ -83,7 +85,7 @@ class EnergyBlastActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        updateEnergyBlastLayoutPreviewData(viewModel)
+        EnergyBlastUtils.initPreviewData(viewModel)
 
         setContent {
             GameUtils_AndroidTheme {
@@ -108,7 +110,7 @@ class EnergyBlastActivity : ComponentActivity() {
 fun EnergyBlastLayoutPreview() {
     val viewModel = viewModel<EnergyBlastViewModel>()
 
-    updateEnergyBlastLayoutPreviewData(viewModel)
+    EnergyBlastUtils.initPreviewData(viewModel)
 
     GameUtils_AndroidTheme {
         EnergyBlastLayout(
@@ -117,25 +119,6 @@ fun EnergyBlastLayoutPreview() {
                 .padding(Dimen.padding),
             viewModel = viewModel
         )
-    }
-}
-
-private fun updateEnergyBlastLayoutPreviewData(viewModel: EnergyBlastViewModel) {
-    repeat(13) { index ->
-        val type = EnergyBlastEquipmentType.entries[index % EnergyBlastEquipmentType.entries.size]
-        val affixList = mutableListOf<IEnergyBlastAffix>()
-        repeat(4) { affixIndex ->
-            affixList.add(EnergyBlastStatAffix.entries[(index + affixIndex) % EnergyBlastStatAffix.entries.size])
-        }
-        repeat(2) { affixIndex ->
-            affixList.add(EnergyBlastSkillAffix.entries[(index + affixIndex) % EnergyBlastSkillAffix.entries.size])
-        }
-        val mainAffix = if (type.hasMainAffix()) {
-            EnergyBlastStatAffix.entries[index % EnergyBlastStatAffix.entries.size]
-        } else {
-            null
-        }
-        viewModel.addEquipment(EnergyBlastEquipmentVo(index.toLong(), type, affixList, mainAffix))
     }
 }
 
@@ -226,7 +209,7 @@ fun EnergyBlastEquipmentGrid(
 ) {
     LazyVerticalGrid(
         modifier = modifier,
-        columns = GridCells.Fixed(5),
+        columns = GridCells.Fixed(EnergyBlastConfig.GRID_COLUMN_NUM),
         horizontalArrangement = Arrangement.spacedBy(Dimen.padding / 2),
         verticalArrangement = Arrangement.spacedBy(Dimen.padding / 2)
     ) {
@@ -267,7 +250,7 @@ fun EnergyBlastEquipmentItem(
         Text(
             style = Style.TextStyle.CONTENT,
             color = equipment.type.textColor,
-            text = equipment.type.title
+            text = equipment.type.title + " " + equipment.positionRowColumn
         )
         if (equipment.mainAffix != null) {
             Text(
@@ -322,7 +305,11 @@ fun EnergyBlastEquipmentEditDialog(
                 Text(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     style = Style.TextStyle.TITLE,
-                    text = stringResource(if (equipment == null) R.string.equipment_add else R.string.equipment_edit),
+                    text = if (equipment == null) {
+                        stringResource(R.string.equipment_add)
+                    } else {
+                        stringResource(R.string.equipment_edit) + " " + equipment.positionRowColumn
+                    },
                 )
                 // 装备类型
                 Row(
