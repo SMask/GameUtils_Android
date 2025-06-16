@@ -34,6 +34,10 @@ enum class EnergyBlastEquipmentType(
 
     companion object {
         const val AFFIX_MAX_NUM = 6 // 最大词条数量
+
+        fun getInstance(title: String): EnergyBlastEquipmentType? {
+            return entries.firstOrNull { it.title == title }
+        }
     }
 }
 
@@ -61,9 +65,9 @@ enum class EnergyBlastStatAffix(
     ATTACK_SPEED("自动攻速", 25, 100),
     CRIT_RATE("暴击概率", 25, 100),
     CRIT_DAMAGE("暴击伤害", 50, Int.MAX_VALUE),
-    DAMAGE_WATER("水系伤害", 50, Int.MAX_VALUE),
-    DAMAGE_FIRE("火系伤害", 50, Int.MAX_VALUE),
-    DAMAGE_WOOD("木系伤害", 50, Int.MAX_VALUE)
+    WATER_DAMAGE("水系伤害", 50, Int.MAX_VALUE),
+    FIRE_DAMAGE("火系伤害", 50, Int.MAX_VALUE),
+    WOOD_DAMAGE("木系伤害", 50, Int.MAX_VALUE)
     ;
 
     companion object {

@@ -47,4 +47,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
     debugImplementation(libs.androidx.ui.tooling)
+
+    // 三方 SDK
+    implementation(libs.gson)
 }
