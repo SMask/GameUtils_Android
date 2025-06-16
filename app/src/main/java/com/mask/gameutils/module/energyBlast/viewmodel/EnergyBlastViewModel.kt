@@ -16,6 +16,7 @@ class EnergyBlastViewModel : ViewModel() {
 
     fun addEquipment(equipment: EnergyBlastEquipmentVo) {
         _equipmentList.add(equipment)
+        sortList()
     }
 
     fun removeEquipment(equipment: EnergyBlastEquipmentVo) {
@@ -27,6 +28,24 @@ class EnergyBlastViewModel : ViewModel() {
         if (index >= 0) {
             _equipmentList[index] = equipment
         }
+        sortList()
     }
 
+    private fun sortList() {
+        _equipmentList.sortWith { leftData, rightData ->
+            val leftType = leftData.type
+            val leftId = leftData.id
+
+            val rightType = rightData.type
+            val rightId = rightData.id
+
+            if (leftType.priority > rightType.priority) {
+                -1
+            } else if (leftType.priority < rightType.priority) {
+                1
+            } else {
+                leftId.compareTo(rightId)
+            }
+        }
+    }
 }
