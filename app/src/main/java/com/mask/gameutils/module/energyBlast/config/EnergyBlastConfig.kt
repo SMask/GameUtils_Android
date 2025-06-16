@@ -10,6 +10,8 @@ import com.mask.gameutils.ui.theme.Color_Text_EnergyBlast_EquipmentType
  */
 object EnergyBlastConfig {
     const val GRID_COLUMN_NUM = 5 // 网格列数
+
+    var lastAddType = EnergyBlastEquipmentType.WEAPON // 最后一次添加的装备类型
 }
 
 /**

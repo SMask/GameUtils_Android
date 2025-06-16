@@ -278,7 +278,7 @@ fun EnergyBlastEquipmentEditDialog(
     onSave: (EnergyBlastEquipmentVo) -> Unit
 ) {
     // 编辑状态管理
-    var type by remember { mutableStateOf(equipment?.type ?: EnergyBlastEquipmentType.WEAPON) }
+    var type by remember { mutableStateOf(equipment?.type ?: EnergyBlastConfig.lastAddType) }
     val affixList: SnapshotStateList<IEnergyBlastAffix?> = remember {
         equipment?.affixList?.toMutableStateList()
             ?: MutableList<IEnergyBlastAffix?>(EnergyBlastEquipmentType.AFFIX_MAX_NUM) { null }.toMutableStateList()

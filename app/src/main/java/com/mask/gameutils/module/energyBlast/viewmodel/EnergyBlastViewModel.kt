@@ -16,6 +16,7 @@ class EnergyBlastViewModel : ViewModel() {
     val equipmentList: List<EnergyBlastEquipmentVo> get() = _equipmentList
 
     fun addEquipment(equipment: EnergyBlastEquipmentVo) {
+        EnergyBlastConfig.lastAddType = equipment.type
         _equipmentList.add(equipment)
         transformList()
     }
