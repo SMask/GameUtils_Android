@@ -1,5 +1,6 @@
 package com.mask.gameutils.module.energyBlast.viewmodel
 
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastConfig
@@ -14,6 +15,9 @@ class EnergyBlastViewModel : ViewModel() {
 
     private val _equipmentList = mutableStateListOf<EnergyBlastEquipmentVo>()
     val equipmentList: List<EnergyBlastEquipmentVo> get() = _equipmentList
+
+    private val _extraAffixNum = mutableIntStateOf(0)
+    val extraAffixNum: Int get() = _extraAffixNum.intValue
 
     fun addEquipment(equipment: EnergyBlastEquipmentVo) {
         EnergyBlastConfig.lastAddType = equipment.type
@@ -31,6 +35,16 @@ class EnergyBlastViewModel : ViewModel() {
             _equipmentList[index] = equipment
         }
         transformList()
+    }
+
+    fun addExtraAffixNum() {
+        _extraAffixNum.intValue += 1
+    }
+
+    fun minusExtraAffixNum() {
+        if (_extraAffixNum.intValue > 0) {
+            _extraAffixNum.intValue -= 1
+        }
     }
 
     private fun transformList() {

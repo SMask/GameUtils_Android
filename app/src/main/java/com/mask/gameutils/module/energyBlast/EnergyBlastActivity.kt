@@ -13,21 +13,28 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -43,7 +50,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -142,6 +151,37 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
             onEditClick = { equipment -> editEquipment = equipment },
             onDeleteClick = { equipment -> deleteEquipment = equipment }
         )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                style = Style.TextStyle.CONTENT,
+                text = stringResource(R.string.energy_blast_extra_affix_num)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                onClick = {
+                    viewModel.minusExtraAffixNum()
+                }
+            ) {
+                Icon(Icons.Default.KeyboardArrowDown, contentDescription = stringResource(R.string.minus))
+            }
+            Text(
+                modifier = Modifier.widthIn(min = 24.dp),
+                style = Style.TextStyle.TITLE,
+                textAlign = TextAlign.Center,
+                text = viewModel.extraAffixNum.toString()
+            )
+            IconButton(
+                onClick = {
+                    viewModel.addExtraAffixNum()
+                }
+            ) {
+                Icon(Icons.Default.KeyboardArrowUp, contentDescription = stringResource(R.string.add))
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
