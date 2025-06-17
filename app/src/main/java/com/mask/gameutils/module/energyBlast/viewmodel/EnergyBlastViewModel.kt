@@ -1,13 +1,13 @@
 package com.mask.gameutils.module.energyBlast.viewmodel
 
+import android.app.Application
 import android.content.Context
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.core.content.edit
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.mask.gameutils.App
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixTypeAdapter
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastConfig
 import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
@@ -18,7 +18,9 @@ import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
  *
  * Create by lishilin on 2025-06-13
  */
-class EnergyBlastViewModel : ViewModel() {
+class EnergyBlastViewModel(private val application: Application) : AndroidViewModel(application) {
+
+    private val isPreview get() = application.baseContext == null
 
     private val keyEnergyBlast = "energy_blast"
     private val keyEquipmentList = "equipment_list"
@@ -37,7 +39,7 @@ class EnergyBlastViewModel : ViewModel() {
     }
 
     private val sharedPreferences by lazy {
-        App.context.getSharedPreferences(keyEnergyBlast, Context.MODE_PRIVATE)
+        application.getSharedPreferences(keyEnergyBlast, Context.MODE_PRIVATE)
     }
 
     init {
@@ -117,6 +119,9 @@ class EnergyBlastViewModel : ViewModel() {
     /************************************************************ S 数据存储 ************************************************************/
 
     private fun loadList() {
+        if (isPreview) {
+            return
+        }
         sharedPreferences.getString(keyEquipmentList, null)?.let { jsonStr ->
             val type = object : TypeToken<List<EnergyBlastEquipmentVo>>() {}.type
             val jsonList = gson.fromJson<List<EnergyBlastEquipmentVo>>(jsonStr, type) ?: emptyList()
@@ -125,16 +130,25 @@ class EnergyBlastViewModel : ViewModel() {
     }
 
     private fun saveList() {
+        if (isPreview) {
+            return
+        }
         sharedPreferences.edit {
             putString(keyEquipmentList, gson.toJson(_equipmentList))
         }
     }
 
     private fun loadExtraAffixNum() {
+        if (isPreview) {
+            return
+        }
         _extraAffixNum.intValue = sharedPreferences.getInt(keyExtraAffixNum, 0)
     }
 
     private fun saveExtraAffixNum() {
+        if (isPreview) {
+            return
+        }
         sharedPreferences.edit {
             putInt(keyExtraAffixNum, _extraAffixNum.intValue)
         }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -56,8 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mask.gameutils.App
 import com.mask.gameutils.R
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastConfig
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
@@ -80,9 +80,7 @@ import com.mask.gameutils.utils.ToastUtils
 
 class EnergyBlastActivity : ComponentActivity() {
 
-    private val viewModel by lazy {
-        ViewModelProvider(this)[EnergyBlastViewModel::class.java]
-    }
+    private val viewModel by viewModels<EnergyBlastViewModel>()
 
     companion object {
         fun startActivity(context: Context) {
@@ -114,7 +112,7 @@ class EnergyBlastActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun EnergyBlastLayoutPreview() {
-    val viewModel = viewModel<EnergyBlastViewModel>()
+    val viewModel = remember { EnergyBlastViewModel(App()) }
 
     EnergyBlastUtils.initPreviewData(viewModel)
 
