@@ -1,8 +1,8 @@
 package com.mask.gameutils.module.energyBlast.utils
 
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
-import com.mask.gameutils.module.energyBlast.config.EnergyBlastSkillAffix
-import com.mask.gameutils.module.energyBlast.config.EnergyBlastStatAffix
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixSkill
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixStat
 import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
 import com.mask.gameutils.module.energyBlast.viewmodel.EnergyBlastViewModel
 import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
@@ -20,17 +20,17 @@ object EnergyBlastUtils {
             val type = EnergyBlastEquipmentType.entries[index % EnergyBlastEquipmentType.entries.size]
             val affixList = mutableListOf<IEnergyBlastAffix>()
             repeat(4) { affixIndex ->
-                affixList.add(EnergyBlastStatAffix.entries[(index + affixIndex) % EnergyBlastStatAffix.entries.size])
+                affixList.add(EnergyBlastAffixStat.entries[(index + affixIndex) % EnergyBlastAffixStat.entries.size])
             }
             repeat(2) { affixIndex ->
-                affixList.add(EnergyBlastSkillAffix.entries[(index + affixIndex) % EnergyBlastSkillAffix.entries.size])
+                affixList.add(EnergyBlastAffixSkill.entries[(index + affixIndex) % EnergyBlastAffixSkill.entries.size])
             }
-            val mainAffix = if (type.hasMainAffix()) {
-                EnergyBlastStatAffix.entries[index % EnergyBlastStatAffix.entries.size]
+            val affixMain = if (type.hasAffixMain()) {
+                EnergyBlastAffixStat.entries[index % EnergyBlastAffixStat.entries.size]
             } else {
                 null
             }
-            viewModel.addEquipment(EnergyBlastEquipmentVo(index.toLong(), type, affixList, mainAffix))
+            viewModel.addEquipment(EnergyBlastEquipmentVo(index.toLong(), type, affixList, affixMain))
         }
     }
 }

@@ -8,10 +8,15 @@ import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.mask.gameutils.R
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixTypeAdapter
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastConfig
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentComparator
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
 import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
+import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentCombinationVo
 import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
+import com.mask.gameutils.utils.ToastUtils
 
 /**
  * ViewModel
@@ -29,8 +34,8 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     private val _equipmentList = mutableStateListOf<EnergyBlastEquipmentVo>()
     val equipmentList: List<EnergyBlastEquipmentVo> get() = _equipmentList
 
-    private val _extraAffixNum = mutableIntStateOf(0)
-    val extraAffixNum: Int get() = _extraAffixNum.intValue
+    private val _affixExtraNum = mutableIntStateOf(0)
+    val affixExtraNum: Int get() = _affixExtraNum.intValue
 
     private val gson by lazy {
         GsonBuilder()
@@ -70,14 +75,60 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     }
 
     fun addExtraAffixNum() {
-        _extraAffixNum.intValue += 1
+        _affixExtraNum.intValue += 1
         saveExtraAffixNum()
     }
 
     fun minusExtraAffixNum() {
-        if (_extraAffixNum.intValue > 0) {
-            _extraAffixNum.intValue -= 1
+        if (_affixExtraNum.intValue > 0) {
+            _affixExtraNum.intValue -= 1
             saveExtraAffixNum()
+        }
+    }
+
+    /**
+     * 计算最佳组合
+     */
+    fun calculateCombination() {
+        // 根据装备类型拆分到不同的集合
+        val weaponList = mutableListOf<EnergyBlastEquipmentVo>()
+        val armorList = mutableListOf<EnergyBlastEquipmentVo>()
+        val ringList = mutableListOf<EnergyBlastEquipmentVo>()
+        _equipmentList.forEach { equipment ->
+            when (equipment.type) {
+                EnergyBlastEquipmentType.WEAPON -> {
+                    weaponList.add(equipment)
+                }
+
+                EnergyBlastEquipmentType.ARMOR -> {
+                    armorList.add(equipment)
+                }
+
+                EnergyBlastEquipmentType.RING -> {
+                    ringList.add(equipment)
+                }
+            }
+        }
+        if (weaponList.isEmpty() || armorList.isEmpty() || ringList.isEmpty()) {
+            ToastUtils.show(R.string.calculate_combination_null)
+            return
+        }
+        // 遍历所有组合
+        val combinationList = mutableListOf<EnergyBlastEquipmentCombinationVo>()
+        weaponList.forEach { weapon ->
+            armorList.forEach { armor ->
+                ringList.forEach { ring ->
+                    combinationList.add(EnergyBlastEquipmentCombinationVo.newInstance(weapon, armor, ring))
+                }
+            }
+        }
+        // 计算最佳组合
+        combinationList.removeAll { combination ->
+            !combination.isOptimal(_affixExtraNum.intValue)
+        }
+        if (combinationList.isEmpty()) {
+            ToastUtils.show(R.string.calculate_combination_null)
+            return
         }
     }
 
@@ -89,21 +140,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     }
 
     private fun sortList() {
-        _equipmentList.sortWith { leftData, rightData ->
-            val leftType = leftData.type
-            val leftId = leftData.id
-
-            val rightType = rightData.type
-            val rightId = rightData.id
-
-            if (leftType.priority > rightType.priority) {
-                -1
-            } else if (leftType.priority < rightType.priority) {
-                1
-            } else {
-                leftId.compareTo(rightId)
-            }
-        }
+        _equipmentList.sortWith(EnergyBlastEquipmentComparator())
     }
 
     private fun convertList() {
@@ -142,7 +179,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         if (isPreview) {
             return
         }
-        _extraAffixNum.intValue = sharedPreferences.getInt(keyExtraAffixNum, 0)
+        _affixExtraNum.intValue = sharedPreferences.getInt(keyExtraAffixNum, 0)
     }
 
     private fun saveExtraAffixNum() {
@@ -150,7 +187,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
             return
         }
         sharedPreferences.edit {
-            putInt(keyExtraAffixNum, _extraAffixNum.intValue)
+            putInt(keyExtraAffixNum, _affixExtraNum.intValue)
         }
     }
 

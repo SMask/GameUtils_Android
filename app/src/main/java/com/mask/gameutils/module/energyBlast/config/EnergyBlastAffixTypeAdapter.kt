@@ -17,11 +17,11 @@ class EnergyBlastAffixTypeAdapter : TypeAdapter<IEnergyBlastAffix>() {
             return
         }
         when (value) {
-            is EnergyBlastStatAffix -> {
+            is EnergyBlastAffixStat -> {
                 jsonWriter.value(value.name)
             }
 
-            is EnergyBlastSkillAffix -> {
+            is EnergyBlastAffixSkill -> {
                 jsonWriter.value(value.name)
             }
         }
@@ -33,11 +33,11 @@ class EnergyBlastAffixTypeAdapter : TypeAdapter<IEnergyBlastAffix>() {
         }
         val name = jsonReader.nextString()
         try {
-            return EnergyBlastStatAffix.valueOf(name)
+            return EnergyBlastAffixStat.valueOf(name)
         } catch (_: Exception) {
         }
         try {
-            return EnergyBlastSkillAffix.valueOf(name)
+            return EnergyBlastAffixSkill.valueOf(name)
         } catch (_: Exception) {
         }
         throw IOException("装备词条解析错误，请检查对比数据")

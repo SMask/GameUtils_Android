@@ -18,8 +18,8 @@
     <string name="calculate_combination_null">暂无最佳组合</string>
 
     <!-- 某不稳定的气功波 -->
-    <string name="energy_blast_extra_affix_num">额外词条数量：</string>
-    <string name="energy_blast_main_affix_null">请选择戒指主词条</string>
+    <string name="energy_blast_affix_extra_num">额外词条数量：</string>
+    <string name="energy_blast_affix_main_null">请选择戒指主词条</string>
     <string name="energy_blast_affix_null">请选择词条</string>
     <string name="energy_blast_delete_title">删除装备</string>
     <string name="energy_blast_delete_content">确定要删除装备“%s”吗？</string>

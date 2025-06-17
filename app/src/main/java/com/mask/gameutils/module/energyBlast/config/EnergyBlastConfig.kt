@@ -20,15 +20,14 @@ object EnergyBlastConfig {
  */
 enum class EnergyBlastEquipmentType(
     val title: String, // 标题
-    val priority: Int, // 优先级（大的靠前）
     val textColor: Color = Color_Text_EnergyBlast_EquipmentType // 文本颜色
 ) {
-    WEAPON("武器", 300),
-    ARMOR("铠甲", 200),
-    RING("戒指", 100)
+    WEAPON("武器"),
+    ARMOR("铠甲"),
+    RING("戒指")
     ;
 
-    fun hasMainAffix(): Boolean {
+    fun hasAffixMain(): Boolean {
         return this == RING
     }
 
@@ -41,20 +40,25 @@ enum class EnergyBlastEquipmentType(
  * 装备词条
  */
 sealed interface IEnergyBlastAffix {
-    val title: String
-    val value: Int
-    val max: Int
-    val textColor: Color
+    val title: String // 标题
+    val value: Int // 数值
+    val max: Int // 最大值
+    val textColor: Color // 文本颜色
+
+    val priority: Int // 优先级（大的靠前，用于不同枚举类型的排序，属性词条、技能词条级别的排序）
+
+    val ordinal: Int // enum 类型关键字
 }
 
 /**
  * 装备词条 属性
  */
-enum class EnergyBlastStatAffix(
-    override val title: String, // 标题
-    override val value: Int, // 数值
-    override val max: Int, // 最大值
-    override val textColor: Color = Color_Text_EnergyBlast_Affix_Stat // 文本颜色
+enum class EnergyBlastAffixStat(
+    override val title: String,
+    override val value: Int,
+    override val max: Int,
+    override val textColor: Color = Color_Text_EnergyBlast_Affix_Stat,
+    override val priority: Int = 200
 ) : IEnergyBlastAffix {
     HP("总生命", 25, Int.MAX_VALUE),
     ATTACK("总攻击", 25, Int.MAX_VALUE),
@@ -72,11 +76,12 @@ enum class EnergyBlastStatAffix(
 /**
  * 装备词条 技能
  */
-enum class EnergyBlastSkillAffix(
-    override val title: String, // 标题
-    override val value: Int, // 数值
-    override val max: Int, // 最大值
-    override val textColor: Color = Color_Text_EnergyBlast_Affix_Skill // 文本颜色
+enum class EnergyBlastAffixSkill(
+    override val title: String,
+    override val value: Int,
+    override val max: Int,
+    override val textColor: Color = Color_Text_EnergyBlast_Affix_Skill,
+    override val priority: Int = 100
 ) : IEnergyBlastAffix {
     HEALING_BODY("治愈之体", 1, 1),
 

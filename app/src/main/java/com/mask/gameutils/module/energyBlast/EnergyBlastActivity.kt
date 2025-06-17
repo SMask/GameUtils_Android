@@ -59,10 +59,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.mask.gameutils.App
 import com.mask.gameutils.R
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixSkill
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixStat
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastConfig
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
-import com.mask.gameutils.module.energyBlast.config.EnergyBlastSkillAffix
-import com.mask.gameutils.module.energyBlast.config.EnergyBlastStatAffix
 import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
 import com.mask.gameutils.module.energyBlast.utils.EnergyBlastUtils
 import com.mask.gameutils.module.energyBlast.viewmodel.EnergyBlastViewModel
@@ -142,8 +142,12 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
                 .fillMaxWidth()
                 .weight(1f),
             equipmentList = viewModel.equipmentList,
-            onEditClick = { equipment -> editEquipment = equipment },
-            onDeleteClick = { equipment -> deleteEquipment = equipment }
+            onEditClick = { equipment ->
+                editEquipment = equipment
+            },
+            onDeleteClick = { equipment ->
+                deleteEquipment = equipment
+            }
         )
         Row(
             modifier = Modifier
@@ -152,7 +156,7 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
         ) {
             Text(
                 style = Style.TextStyle.CONTENT,
-                text = stringResource(R.string.energy_blast_extra_affix_num)
+                text = stringResource(R.string.energy_blast_affix_extra_num)
             )
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
@@ -166,7 +170,7 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
                 modifier = Modifier.widthIn(min = 24.dp),
                 style = Style.TextStyle.TITLE,
                 textAlign = TextAlign.Center,
-                text = viewModel.extraAffixNum.toString()
+                text = viewModel.affixExtraNum.toString()
             )
             IconButton(
                 onClick = {
@@ -193,7 +197,7 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
                     .weight(1f),
                 textResId = R.string.calculate_combination,
                 onClick = {
-                    ToastUtils.show("计算最佳组合")
+                    viewModel.calculateCombination()
                 })
         }
     }
@@ -286,12 +290,12 @@ fun EnergyBlastEquipmentItem(
             color = equipment.type.textColor,
             text = equipment.type.title + " " + equipment.positionRowColumn
         )
-        if (equipment.mainAffix != null) {
+        if (equipment.affixMain != null) {
             Text(
                 style = Style.TextStyle.CONTENT,
                 color = Color_Text_EnergyBlast_Affix_Main,
                 fontSize = 12.sp,
-                text = equipment.mainAffix.title
+                text = equipment.affixMain.title
             )
         }
         equipment.affixList.forEach { item ->
@@ -317,7 +321,7 @@ fun EnergyBlastEquipmentEditDialog(
         equipment?.affixList?.toMutableStateList()
             ?: MutableList<IEnergyBlastAffix?>(EnergyBlastEquipmentType.AFFIX_MAX_NUM) { null }.toMutableStateList()
     }
-    var mainAffix by remember { mutableStateOf(equipment?.mainAffix) }
+    var affixMain by remember { mutableStateOf(equipment?.affixMain) }
 
     // UI
     Dialog(
@@ -364,11 +368,13 @@ fun EnergyBlastEquipmentEditDialog(
                     }
                 }
                 // 主词条
-                if (type.hasMainAffix()) {
+                if (type.hasAffixMain()) {
                     EnergyBlastEquipmentDropdownMenu(
-                        affix = mainAffix,
-                        onAffixChange = { affix -> mainAffix = affix as? EnergyBlastStatAffix },
-                        isMainAffix = true,
+                        affix = affixMain,
+                        onAffixChange = { affix ->
+                            affixMain = affix as? EnergyBlastAffixStat
+                        },
+                        isAffixMain = true,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(Dimen.dropdownItemHeight)
@@ -378,8 +384,10 @@ fun EnergyBlastEquipmentEditDialog(
                 affixList.forEachIndexed { index, item ->
                     EnergyBlastEquipmentDropdownMenu(
                         affix = item,
-                        onAffixChange = { affix -> affixList[index] = affix },
-                        isMainAffix = false,
+                        onAffixChange = { affix ->
+                            affixList[index] = affix
+                        },
+                        isAffixMain = false,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(Dimen.dropdownItemHeight)
@@ -390,8 +398,8 @@ fun EnergyBlastEquipmentEditDialog(
                     modifier = Modifier.fillMaxWidth(),
                     textResId = R.string.save,
                     onClick = {
-                        if (type.hasMainAffix() && mainAffix == null) {
-                            ToastUtils.show(R.string.energy_blast_main_affix_null)
+                        if (type.hasAffixMain() && affixMain == null) {
+                            ToastUtils.show(R.string.energy_blast_affix_main_null)
                             return@ButtonNormal
                         }
                         if (affixList.any { it == null }) {
@@ -403,7 +411,7 @@ fun EnergyBlastEquipmentEditDialog(
                                 equipment?.id ?: System.currentTimeMillis(),
                                 type,
                                 affixList.filterNotNull(),
-                                if (type.hasMainAffix()) mainAffix else null,
+                                if (type.hasAffixMain()) affixMain else null,
                             )
                         )
                     })
@@ -416,7 +424,7 @@ fun EnergyBlastEquipmentEditDialog(
 fun EnergyBlastEquipmentDropdownMenu(
     affix: IEnergyBlastAffix?,
     onAffixChange: (IEnergyBlastAffix) -> Unit,
-    isMainAffix: Boolean,
+    isAffixMain: Boolean,
     modifier: Modifier = Modifier
 ) {
     var isExpandedDropdownMenu by remember { mutableStateOf(false) }
@@ -426,7 +434,7 @@ fun EnergyBlastEquipmentDropdownMenu(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(Dimen.radius))
-                .background(if (isMainAffix) Color_Bg_EnergyBlast_Affix_Main else Color_Bg_EnergyBlast_Affix)
+                .background(if (isAffixMain) Color_Bg_EnergyBlast_Affix_Main else Color_Bg_EnergyBlast_Affix)
                 .clickable { isExpandedDropdownMenu = !isExpandedDropdownMenu },
             horizontalArrangement = Arrangement.Center,
         ) {
@@ -434,7 +442,7 @@ fun EnergyBlastEquipmentDropdownMenu(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 style = Style.TextStyle.CONTENT,
                 color = if (affix != null) {
-                    if (isMainAffix) {
+                    if (isAffixMain) {
                         Color_Text_EnergyBlast_Affix_Main
                     } else {
                         affix.textColor
@@ -456,7 +464,7 @@ fun EnergyBlastEquipmentDropdownMenu(
                 expanded = isExpandedDropdownMenu,
                 onDismissRequest = { isExpandedDropdownMenu = false }) {
                 // 属性词条
-                EnergyBlastStatAffix.entries.forEach { item ->
+                EnergyBlastAffixStat.entries.forEach { item ->
                     EnergyBlastEquipmentDropdownMenuItem(
                         affix = item,
                         onClick = {
@@ -466,8 +474,8 @@ fun EnergyBlastEquipmentDropdownMenu(
                     )
                 }
                 // 技能词条
-                if (!isMainAffix) {
-                    EnergyBlastSkillAffix.entries.forEach { item ->
+                if (!isAffixMain) {
+                    EnergyBlastAffixSkill.entries.forEach { item ->
                         EnergyBlastEquipmentDropdownMenuItem(
                             affix = item,
                             onClick = {
