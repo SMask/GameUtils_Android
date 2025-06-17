@@ -36,7 +36,6 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxSize()
-                            .padding(16.dp)
                     )
                 }
             }
@@ -51,7 +50,6 @@ fun MainLayoutPreview() {
         MainLayout(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
         )
     }
 }
@@ -65,6 +63,7 @@ fun MainLayout(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
+            .padding(16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(Dimen.padding)
     ) {

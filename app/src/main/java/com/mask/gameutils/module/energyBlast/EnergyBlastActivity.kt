@@ -99,8 +99,7 @@ class EnergyBlastActivity : ComponentActivity() {
                     EnergyBlastLayout(
                         modifier = Modifier
                             .padding(innerPadding)
-                            .fillMaxSize()
-                            .padding(Dimen.padding),
+                            .fillMaxSize(),
                         viewModel = viewModel
                     )
                 }
@@ -119,8 +118,7 @@ fun EnergyBlastLayoutPreview() {
     GameUtils_AndroidTheme {
         EnergyBlastLayout(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(Dimen.padding),
+                .fillMaxSize(),
             viewModel = viewModel
         )
     }
@@ -135,7 +133,8 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
 
     // UI
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .padding(Dimen.padding),
         verticalArrangement = Arrangement.spacedBy(Dimen.padding)
     ) {
         EnergyBlastEquipmentGrid(
