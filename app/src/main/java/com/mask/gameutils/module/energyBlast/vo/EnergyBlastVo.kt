@@ -53,6 +53,9 @@ data class EnergyBlastEquipmentCombinationVo(
                 return false
             }
             extraNumForMax += extraNum
+            if (extraNumForMax > affixExtraNum) {
+                return false
+            }
         }
         // 技能词条
         EnergyBlastAffixSkill.entries.forEach { affix ->
@@ -62,7 +65,7 @@ data class EnergyBlastEquipmentCombinationVo(
                 return false
             }
         }
-        return extraNumForMax <= affixExtraNum
+        return true
     }
 
     /**
