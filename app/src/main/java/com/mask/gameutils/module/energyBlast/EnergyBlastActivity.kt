@@ -191,7 +191,7 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
             ButtonNormal(
                 modifier = Modifier
                     .weight(1f),
-                textResId = R.string.calculate_best_combination,
+                textResId = R.string.calculate_combination,
                 onClick = {
                     ToastUtils.show("计算最佳组合")
                 })
@@ -291,15 +291,15 @@ fun EnergyBlastEquipmentItem(
                 style = Style.TextStyle.CONTENT,
                 color = Color_Text_EnergyBlast_Affix_Main,
                 fontSize = 12.sp,
-                text = equipment.mainAffix.getAffixTitle()
+                text = equipment.mainAffix.title
             )
         }
         equipment.affixList.forEach { item ->
             Text(
                 style = Style.TextStyle.CONTENT,
-                color = item.getAffixTextColor(),
+                color = item.textColor,
                 fontSize = 12.sp,
-                text = item.getAffixTitle()
+                text = item.title
             )
         }
     }
@@ -437,12 +437,12 @@ fun EnergyBlastEquipmentDropdownMenu(
                     if (isMainAffix) {
                         Color_Text_EnergyBlast_Affix_Main
                     } else {
-                        affix.getAffixTextColor()
+                        affix.textColor
                     }
                 } else {
                     Color_Text_EnergyBlast_Affix_Unselected
                 },
-                text = affix?.getAffixTitle() ?: stringResource(R.string.please_select)
+                text = affix?.title ?: stringResource(R.string.please_select)
             )
         }
         Box(
@@ -494,8 +494,8 @@ fun EnergyBlastEquipmentDropdownMenuItem(
         text = {
             Text(
                 style = Style.TextStyle.CONTENT,
-                color = affix.getAffixTextColor(),
-                text = affix.getAffixTitle()
+                color = affix.textColor,
+                text = affix.title
             )
         }
     )

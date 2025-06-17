@@ -34,10 +34,6 @@ enum class EnergyBlastEquipmentType(
 
     companion object {
         const val AFFIX_MAX_NUM = 6 // 最大词条数量
-
-        fun getInstance(title: String): EnergyBlastEquipmentType? {
-            return entries.firstOrNull { it.title == title }
-        }
     }
 }
 
@@ -45,18 +41,20 @@ enum class EnergyBlastEquipmentType(
  * 装备词条
  */
 sealed interface IEnergyBlastAffix {
-    fun getAffixTitle(): String
-    fun getAffixTextColor(): Color
+    val title: String
+    val value: Int
+    val max: Int
+    val textColor: Color
 }
 
 /**
  * 装备词条 属性
  */
 enum class EnergyBlastStatAffix(
-    val title: String, // 标题
-    val value: Int, // 数值
-    val max: Int, // 最大值
-    val textColor: Color = Color_Text_EnergyBlast_Affix_Stat // 文本颜色
+    override val title: String, // 标题
+    override val value: Int, // 数值
+    override val max: Int, // 最大值
+    override val textColor: Color = Color_Text_EnergyBlast_Affix_Stat // 文本颜色
 ) : IEnergyBlastAffix {
     HP("总生命", 25, Int.MAX_VALUE),
     ATTACK("总攻击", 25, Int.MAX_VALUE),
@@ -69,30 +67,16 @@ enum class EnergyBlastStatAffix(
     FIRE_DAMAGE("火系伤害", 50, Int.MAX_VALUE),
     WOOD_DAMAGE("木系伤害", 50, Int.MAX_VALUE)
     ;
-
-    companion object {
-        fun getInstance(title: String): EnergyBlastStatAffix? {
-            return entries.firstOrNull { it.title == title }
-        }
-    }
-
-    override fun getAffixTitle(): String {
-        return title
-    }
-
-    override fun getAffixTextColor(): Color {
-        return textColor
-    }
 }
 
 /**
  * 装备词条 技能
  */
 enum class EnergyBlastSkillAffix(
-    val title: String, // 标题
-    val value: Int, // 数值
-    val max: Int, // 最大值
-    val textColor: Color = Color_Text_EnergyBlast_Affix_Skill // 文本颜色
+    override val title: String, // 标题
+    override val value: Int, // 数值
+    override val max: Int, // 最大值
+    override val textColor: Color = Color_Text_EnergyBlast_Affix_Skill // 文本颜色
 ) : IEnergyBlastAffix {
     HEALING_BODY("治愈之体", 1, 1),
 
@@ -114,18 +98,4 @@ enum class EnergyBlastSkillAffix(
     WOOD_3("木林旋风", 1, 1),
     WOOD_4("木神附体", 1, 1)
     ;
-
-    companion object {
-        fun getInstance(title: String): EnergyBlastSkillAffix? {
-            return entries.firstOrNull { it.title == title }
-        }
-    }
-
-    override fun getAffixTitle(): String {
-        return title
-    }
-
-    override fun getAffixTextColor(): Color {
-        return textColor
-    }
 }
