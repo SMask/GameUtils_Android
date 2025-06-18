@@ -8,6 +8,8 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -34,7 +36,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun GameUtils_AndroidTheme(
 //    darkTheme: Boolean = isSystemInDarkTheme(),
-    darkTheme: Boolean = false,
+    darkTheme: Boolean = false, // 默认关闭黑暗模式
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -48,6 +50,8 @@ fun GameUtils_AndroidTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
+    ViewCompat.getWindowInsetsController(LocalView.current)?.isAppearanceLightStatusBars = !darkTheme
 
     MaterialTheme(
         colorScheme = colorScheme,

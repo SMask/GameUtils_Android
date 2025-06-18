@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.GameUtils_Android" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.GameUtils_Android" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- 状态栏背景颜色 -->
+        <item name="android:statusBarColor">@color/white</item>
+        <!-- 状态栏文字颜色：true 为深色（黑色），false 为浅色（白色） -->
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
 </resources>

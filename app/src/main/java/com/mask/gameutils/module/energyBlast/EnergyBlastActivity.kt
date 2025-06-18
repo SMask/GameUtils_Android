@@ -133,7 +133,7 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
     var isShowAddDialog by remember { mutableStateOf(false) }
     var editEquipment by remember { mutableStateOf<EnergyBlastEquipmentVo?>(null) }
     var deleteEquipment by remember { mutableStateOf<EnergyBlastEquipmentVo?>(null) }
-    var isShowCombinationDialog by remember { mutableStateOf(true) }
+    var isShowCombinationDialog by remember { mutableStateOf(false) }
 
     // UI
     Column(

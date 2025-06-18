@@ -14,6 +14,6 @@ val Color_Text_EnergyBlast_EquipmentType = Color.Red // 文本颜色 装备类�
 val Color_Text_EnergyBlast_Affix_Unselected = Color.Gray // 文本颜色 词条（未选中）
 val Color_Text_EnergyBlast_Affix_Stat = Color.Black // 文本颜色 词条（属性）
 val Color_Text_EnergyBlast_Affix_Skill = Color(0xFFCC00FF) // 文本颜色 词条（技能）
-val Color_Text_EnergyBlast_Affix_Main = Color(0xFFFF00FF) // 文本颜色 主词条
+val Color_Text_EnergyBlast_Affix_Main = Color(0xFFCC00FF) // 文本颜色 主词条
 val Color_Bg_EnergyBlast_Affix = Color.LightGray // 背景色 词条
 val Color_Bg_EnergyBlast_Affix_Main = Color(0xFFCCCCFF) // 背景色 主词条
