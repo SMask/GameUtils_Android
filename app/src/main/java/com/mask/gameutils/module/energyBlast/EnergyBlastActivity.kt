@@ -21,9 +21,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -66,6 +68,7 @@ import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
 import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
 import com.mask.gameutils.module.energyBlast.utils.EnergyBlastUtils
 import com.mask.gameutils.module.energyBlast.viewmodel.EnergyBlastViewModel
+import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentCombinationVo
 import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
 import com.mask.gameutils.ui.ButtonNormal
 import com.mask.gameutils.ui.theme.Color_Bg_EnergyBlast_Affix
@@ -130,6 +133,7 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
     var isShowAddDialog by remember { mutableStateOf(false) }
     var editEquipment by remember { mutableStateOf<EnergyBlastEquipmentVo?>(null) }
     var deleteEquipment by remember { mutableStateOf<EnergyBlastEquipmentVo?>(null) }
+    var isShowCombinationDialog by remember { mutableStateOf(true) }
 
     // UI
     Column(
@@ -195,9 +199,10 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
             ButtonNormal(
                 modifier = Modifier
                     .weight(1f),
-                textResId = R.string.calculate_combination,
+                textResId = R.string.calculate_optimal_combination,
                 onClick = {
-                    viewModel.calculateCombination()
+                    viewModel.calculateOptimalCombination()
+                    isShowCombinationDialog = true
                 })
         }
     }
@@ -236,6 +241,16 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
             }
         )
     }
+    // 弹窗-计算结果组合
+    val combinationList = viewModel.combinationList
+    if (isShowCombinationDialog && combinationList.isNotEmpty()) {
+        EnergyBlastCombinationDialog(
+            combinationList = combinationList,
+            onDismiss = {
+                isShowCombinationDialog = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -271,16 +286,16 @@ fun EnergyBlastEquipmentGrid(
 @Composable
 fun EnergyBlastEquipmentItem(
     equipment: EnergyBlastEquipmentVo,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onEditClick: (() -> Unit)? = null,
+    onDeleteClick: (() -> Unit)? = null
 ) {
     Column(
         modifier = modifier
             .border(Dimen.strokeWidth, Color.Black, RoundedCornerShape(Dimen.radius / 2))
             .combinedClickable(
-                onClick = { onEditClick() },
-                onLongClick = { onDeleteClick() },
+                onClick = { onEditClick?.invoke() },
+                onLongClick = onDeleteClick,
             )
             .padding(Dimen.padding / 2),
         verticalArrangement = Arrangement.spacedBy(Dimen.padding / 2)
@@ -288,6 +303,7 @@ fun EnergyBlastEquipmentItem(
         Text(
             style = Style.TextStyle.CONTENT,
             color = equipment.type.textColor,
+            fontSize = 12.sp,
             text = equipment.type.title + " " + equipment.positionRowColumn
         )
         if (equipment.affixMain != null) {
@@ -329,9 +345,9 @@ fun EnergyBlastEquipmentEditDialog(
         properties = DialogProperties(dismissOnClickOutside = equipment != null)
     ) {
         Surface(
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(Dimen.radius),
-            color = Color.White,
-            modifier = Modifier.fillMaxWidth()
+            color = Color.White
         ) {
             Column(
                 modifier = Modifier
@@ -370,27 +386,27 @@ fun EnergyBlastEquipmentEditDialog(
                 // 主词条
                 if (type.hasAffixMain()) {
                     EnergyBlastEquipmentDropdownMenu(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(Dimen.dropdownItemHeight),
                         affix = affixMain,
                         onAffixChange = { affix ->
                             affixMain = affix as? EnergyBlastAffixStat
                         },
-                        isAffixMain = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(Dimen.dropdownItemHeight)
+                        isAffixMain = true
                     )
                 }
                 // 词条列表
                 affixList.forEachIndexed { index, item ->
                     EnergyBlastEquipmentDropdownMenu(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(Dimen.dropdownItemHeight),
                         affix = item,
                         onAffixChange = { affix ->
                             affixList[index] = affix
                         },
-                        isAffixMain = false,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(Dimen.dropdownItemHeight)
+                        isAffixMain = false
                     )
                 }
                 // 保存
@@ -540,4 +556,147 @@ fun EnergyBlastEquipmentDeleteDialog(
             }
         }
     )
+}
+
+@Composable
+fun EnergyBlastCombinationDialog(
+    combinationList: List<EnergyBlastEquipmentCombinationVo>,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(dismissOnClickOutside = false)
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.9f),
+            shape = RoundedCornerShape(Dimen.radius),
+            color = Color.White
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimen.padding),
+                verticalArrangement = Arrangement.spacedBy(Dimen.padding)
+            ) {
+                // 标题
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    style = Style.TextStyle.TITLE,
+                    text = stringResource(R.string.optimal_combination),
+                )
+                // 内容
+                EnergyBlastCombinationList(
+                    modifier = Modifier.fillMaxWidth(),
+                    combinationList = combinationList
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun EnergyBlastCombinationList(
+    combinationList: List<EnergyBlastEquipmentCombinationVo>,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Dimen.padding)
+    ) {
+        itemsIndexed(
+            items = combinationList
+        ) { index, combination ->
+            EnergyBlastCombinationItem(
+                index = index,
+                modifier = Modifier.fillMaxWidth(),
+                combination = combination
+            )
+        }
+    }
+}
+
+@Composable
+fun EnergyBlastCombinationItem(
+    index: Int,
+    combination: EnergyBlastEquipmentCombinationVo,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Dimen.padding / 2)
+    ) {
+        Text(
+            style = Style.TextStyle.CONTENT,
+            text = stringResource(R.string.combination_title, (index + 1).toString())
+        )
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Dimen.padding / 2)
+        ) {
+            // 装备信息
+            combination.equipmentList.forEach { equipment ->
+                EnergyBlastEquipmentItem(
+                    modifier = Modifier.weight(1f),
+                    equipment = equipment
+                )
+            }
+            // 词条信息
+            EnergyBlastCombinationAffixInfo(
+                modifier = Modifier.weight(1.25f),
+                combination = combination
+            )
+        }
+    }
+}
+
+@Composable
+fun EnergyBlastCombinationAffixInfo(
+    combination: EnergyBlastEquipmentCombinationVo,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .border(Dimen.strokeWidth, Color.Black, RoundedCornerShape(Dimen.radius / 2))
+            .padding(Dimen.padding / 2),
+        verticalArrangement = Arrangement.spacedBy(Dimen.padding / 2)
+    ) {
+        combination.affixMap.forEach { (affix, value) ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    style = Style.TextStyle.CONTENT,
+                    color = affix.textColor,
+                    fontSize = 12.sp,
+                    text = affix.title
+                )
+                Row(
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.spacedBy(Dimen.padding / 2)
+                ) {
+                    // 词条需要额外补充的数量
+                    val extraNum = combination.getAffixExtraNumForMax(affix)
+                    if (extraNum > 0) {
+                        Text(
+                            style = Style.TextStyle.CONTENT,
+                            color = Color.Red,
+                            fontSize = 12.sp,
+                            text = extraNum.toString()
+                        )
+                    }
+                    // 词条当前属性
+                    Text(
+                        style = Style.TextStyle.CONTENT,
+                        fontSize = 12.sp,
+                        text = value.toString()
+                    )
+                }
+            }
+        }
+    }
 }

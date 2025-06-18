@@ -14,8 +14,10 @@
     <string name="equipment_info">装备信息</string>
     <string name="equipment_add">添加装备</string>
     <string name="equipment_edit">编辑装备</string>
-    <string name="calculate_combination">计算最佳组合</string>
-    <string name="calculate_combination_null">暂无最佳组合</string>
+    <string name="combination_title">组合 %s</string>
+    <string name="optimal_combination">最佳组合</string>
+    <string name="calculate_optimal_combination">计算最佳组合</string>
+    <string name="calculate_optimal_combination_null">暂无最佳组合</string>
 
     <!-- 某不稳定的气功波 -->
     <string name="energy_blast_affix_extra_num">额外词条数量：</string>

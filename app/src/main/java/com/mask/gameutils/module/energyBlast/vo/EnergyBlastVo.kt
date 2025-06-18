@@ -43,6 +43,9 @@ data class EnergyBlastEquipmentCombinationVo(
         }
     }
 
+    /**
+     * 是否最佳
+     */
     fun isOptimal(affixExtraNum: Int): Boolean {
         var extraNumForMax = 0
         // 属性词条
@@ -71,7 +74,7 @@ data class EnergyBlastEquipmentCombinationVo(
     /**
      * 获取 词条达到最大值还需要的额外数量
      */
-    private fun getAffixExtraNumForMax(affix: IEnergyBlastAffix): Int {
+    fun getAffixExtraNumForMax(affix: IEnergyBlastAffix): Int {
         if (affix.max == Int.MAX_VALUE) {
             return 0
         }

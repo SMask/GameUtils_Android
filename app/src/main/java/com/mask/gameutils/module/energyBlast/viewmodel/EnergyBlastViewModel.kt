@@ -37,6 +37,9 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     private val _affixExtraNum = mutableIntStateOf(0)
     val affixExtraNum: Int get() = _affixExtraNum.intValue
 
+    private val _combinationList = mutableStateListOf<EnergyBlastEquipmentCombinationVo>()
+    val combinationList: List<EnergyBlastEquipmentCombinationVo> get() = _combinationList
+
     private val gson by lazy {
         GsonBuilder()
             .registerTypeAdapter(IEnergyBlastAffix::class.java, EnergyBlastAffixTypeAdapter())
@@ -89,7 +92,8 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     /**
      * 计算最佳组合
      */
-    fun calculateCombination() {
+    fun calculateOptimalCombination() {
+        _combinationList.clear()
         // 根据装备类型拆分到不同的集合
         val weaponList = mutableListOf<EnergyBlastEquipmentVo>()
         val armorList = mutableListOf<EnergyBlastEquipmentVo>()
@@ -110,7 +114,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
             }
         }
         if (weaponList.isEmpty() || armorList.isEmpty() || ringList.isEmpty()) {
-            ToastUtils.show(R.string.calculate_combination_null)
+            ToastUtils.show(R.string.calculate_optimal_combination_null)
             return
         }
         // 遍历所有组合
@@ -127,9 +131,11 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
             !combination.isOptimal(_affixExtraNum.intValue)
         }
         if (combinationList.isEmpty()) {
-            ToastUtils.show(R.string.calculate_combination_null)
+            ToastUtils.show(R.string.calculate_optimal_combination_null)
             return
         }
+        // 保存最佳组合
+        _combinationList.addAll(combinationList)
     }
 
     /************************************************************ S 数据转换 ************************************************************/
