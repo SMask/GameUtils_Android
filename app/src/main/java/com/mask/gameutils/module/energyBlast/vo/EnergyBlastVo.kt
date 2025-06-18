@@ -17,7 +17,7 @@ data class EnergyBlastEquipmentVo(
     val affixMain: EnergyBlastAffixStat? = null, // 主词条（只有戒指有，数值是普通词条的两倍）
 
     // 以下数据需要特殊计算
-    var positionRowColumn: String = "", // 位置（行、列）
+    var position: String = "", // 位置
 )
 
 /**

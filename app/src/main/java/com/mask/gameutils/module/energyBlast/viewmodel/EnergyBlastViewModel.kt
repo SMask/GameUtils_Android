@@ -153,7 +153,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         _equipmentList.forEachIndexed { index, equipment ->
             val row = index / EnergyBlastConfig.GRID_COLUMN_NUM
             val column = index % EnergyBlastConfig.GRID_COLUMN_NUM
-            equipment.positionRowColumn = "${row + 1}-${column + 1}"
+            equipment.position = "${row + 1}-${column + 1}"
         }
     }
 

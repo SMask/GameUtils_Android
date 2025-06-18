@@ -10,6 +10,7 @@ import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
 class EnergyBlastEquipmentComparator : Comparator<EnergyBlastEquipmentVo> {
 
     override fun compare(leftData: EnergyBlastEquipmentVo?, rightData: EnergyBlastEquipmentVo?): Int {
+        // 为 null 的在前
         if (leftData == null && rightData == null) {
             return 0
         }
@@ -27,8 +28,10 @@ class EnergyBlastEquipmentComparator : Comparator<EnergyBlastEquipmentVo> {
         val rightId = rightData.id
 
         return if (leftType != rightType) {
+            // 按装备类型排序
             leftType.compareTo(rightType)
         } else {
+            // 装备类型相同，按 id 排序
             leftId.compareTo(rightId)
         }
     }

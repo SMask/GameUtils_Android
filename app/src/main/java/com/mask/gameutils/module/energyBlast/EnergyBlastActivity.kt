@@ -304,7 +304,7 @@ fun EnergyBlastEquipmentItem(
             style = Style.TextStyle.CONTENT,
             color = equipment.type.textColor,
             fontSize = 12.sp,
-            text = equipment.type.title + " " + equipment.positionRowColumn
+            text = equipment.type.title + " " + equipment.position
         )
         if (equipment.affixMain != null) {
             Text(
@@ -362,7 +362,7 @@ fun EnergyBlastEquipmentEditDialog(
                     text = if (equipment == null) {
                         stringResource(R.string.equipment_add)
                     } else {
-                        stringResource(R.string.equipment_edit) + " " + equipment.positionRowColumn
+                        stringResource(R.string.equipment_edit) + " " + equipment.position
                     },
                 )
                 // 装备类型
@@ -537,7 +537,7 @@ fun EnergyBlastEquipmentDeleteDialog(
             Text(text = stringResource(R.string.energy_blast_delete_title))
         },
         text = {
-            Text(text = stringResource(R.string.energy_blast_delete_content, "${equipment.type.title} ${equipment.positionRowColumn}"))
+            Text(text = stringResource(R.string.energy_blast_delete_content, "${equipment.type.title} ${equipment.position}"))
         },
         confirmButton = {
             Button(
