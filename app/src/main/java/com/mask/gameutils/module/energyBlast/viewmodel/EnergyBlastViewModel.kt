@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken
 import com.mask.gameutils.R
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastAffixTypeAdapter
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastConfig
+import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentCombinationComparator
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentComparator
 import com.mask.gameutils.module.energyBlast.config.EnergyBlastEquipmentType
 import com.mask.gameutils.module.energyBlast.config.IEnergyBlastAffix
@@ -135,6 +136,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
             return
         }
         // 保存最佳组合
+        combinationList.sortWith(EnergyBlastEquipmentCombinationComparator())
         _combinationList.addAll(combinationList)
     }
 
