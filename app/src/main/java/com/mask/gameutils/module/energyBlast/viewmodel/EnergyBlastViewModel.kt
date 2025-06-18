@@ -150,10 +150,18 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     }
 
     private fun convertList() {
+        var indexOffset = 0 // 下标偏移
         _equipmentList.forEachIndexed { index, equipment ->
-            val row = index / EnergyBlastConfig.GRID_COLUMN_NUM
-            val column = index % EnergyBlastConfig.GRID_COLUMN_NUM
-            equipment.position = "${row + 1}-${column + 1}"
+            // 行、列
+//            val row = index / EnergyBlastConfig.GRID_COLUMN_NUM
+//            val column = index % EnergyBlastConfig.GRID_COLUMN_NUM
+//            equipment.position = "${row + 1}-${column + 1}"
+
+            // 下标
+            if (equipment.type != _equipmentList.getOrNull(index - 1)?.type) {
+                indexOffset = index
+            }
+            equipment.position = "${index - indexOffset + 1}"
         }
     }
 
