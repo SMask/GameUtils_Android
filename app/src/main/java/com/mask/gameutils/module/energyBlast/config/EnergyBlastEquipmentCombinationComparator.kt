@@ -15,15 +15,17 @@ class EnergyBlastEquipmentCombinationComparator : Comparator<EnergyBlastEquipmen
             EnergyBlastAffixSkill.WATER_0,
             EnergyBlastAffixSkill.FIRE_0,
             EnergyBlastAffixSkill.WOOD_0,
+            EnergyBlastAffixSkill.WATER_4,
+            EnergyBlastAffixSkill.FIRE_4,
+            EnergyBlastAffixSkill.WOOD_4
         )
     }
 
     private val affixP1 = EnergyBlastAffixSkill.FIRE_4
     private val affixListP1 by lazy {
         listOf(
-            EnergyBlastAffixSkill.WATER_4,
+            EnergyBlastAffixSkill.FIRE_0,
             EnergyBlastAffixSkill.FIRE_4,
-            EnergyBlastAffixSkill.WOOD_4
         )
     }
 
@@ -35,7 +37,10 @@ class EnergyBlastEquipmentCombinationComparator : Comparator<EnergyBlastEquipmen
         )
     }
 
-    override fun compare(leftData: EnergyBlastEquipmentCombinationVo?, rightData: EnergyBlastEquipmentCombinationVo?): Int {
+    override fun compare(
+        leftData: EnergyBlastEquipmentCombinationVo?,
+        rightData: EnergyBlastEquipmentCombinationVo?
+    ): Int {
         // 为 null 的在前
         if (leftData == null && rightData == null) {
             return 0
