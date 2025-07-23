@@ -28,7 +28,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
 
     private val isPreview get() = application.baseContext == null
 
-    private val keyEnergyBlast = "energy_blast"
+    private val spName = "energy_blast"
     private val keyEquipmentList = "equipment_list"
     private val keyExtraAffixNum = "extra_affix_num"
 
@@ -48,7 +48,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     }
 
     private val sharedPreferences by lazy {
-        application.getSharedPreferences(keyEnergyBlast, Context.MODE_PRIVATE)
+        application.getSharedPreferences(spName, Context.MODE_PRIVATE)
     }
 
     init {
