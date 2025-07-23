@@ -51,7 +51,10 @@ fun GameUtils_AndroidTheme(
         else -> LightColorScheme
     }
 
-    ViewCompat.getWindowInsetsController(LocalView.current)?.isAppearanceLightStatusBars = !darkTheme
+    // 状态栏、导航栏图标颜色
+    val windowInsetsController = ViewCompat.getWindowInsetsController(LocalView.current)
+    windowInsetsController?.isAppearanceLightStatusBars = !darkTheme
+    windowInsetsController?.isAppearanceLightNavigationBars = !darkTheme
 
     MaterialTheme(
         colorScheme = colorScheme,
