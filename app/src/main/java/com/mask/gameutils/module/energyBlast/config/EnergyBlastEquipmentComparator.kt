@@ -9,7 +9,10 @@ import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentVo
  */
 class EnergyBlastEquipmentComparator : Comparator<EnergyBlastEquipmentVo> {
 
-    override fun compare(leftData: EnergyBlastEquipmentVo?, rightData: EnergyBlastEquipmentVo?): Int {
+    override fun compare(
+        leftData: EnergyBlastEquipmentVo?,
+        rightData: EnergyBlastEquipmentVo?
+    ): Int {
         // 为 null 的在前
         if (leftData == null && rightData == null) {
             return 0

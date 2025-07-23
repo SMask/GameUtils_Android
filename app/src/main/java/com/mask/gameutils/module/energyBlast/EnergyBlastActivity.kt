@@ -168,7 +168,10 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
                     viewModel.minusExtraAffixNum()
                 }
             ) {
-                Icon(Icons.Default.KeyboardArrowDown, contentDescription = stringResource(R.string.minus))
+                Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    contentDescription = stringResource(R.string.minus)
+                )
             }
             Text(
                 modifier = Modifier.widthIn(min = 24.dp),
@@ -181,7 +184,10 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
                     viewModel.addExtraAffixNum()
                 }
             ) {
-                Icon(Icons.Default.KeyboardArrowUp, contentDescription = stringResource(R.string.add))
+                Icon(
+                    Icons.Default.KeyboardArrowUp,
+                    contentDescription = stringResource(R.string.add)
+                )
             }
         }
         Row(
@@ -537,7 +543,12 @@ fun EnergyBlastEquipmentDeleteDialog(
             Text(text = stringResource(R.string.energy_blast_delete_title))
         },
         text = {
-            Text(text = stringResource(R.string.energy_blast_delete_content, "${equipment.type.title} ${equipment.position}"))
+            Text(
+                text = stringResource(
+                    R.string.energy_blast_delete_content,
+                    "${equipment.type.title} ${equipment.position}"
+                )
+            )
         },
         confirmButton = {
             Button(

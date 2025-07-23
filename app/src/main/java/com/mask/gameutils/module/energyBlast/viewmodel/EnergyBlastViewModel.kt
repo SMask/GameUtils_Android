@@ -123,7 +123,13 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         weaponList.forEach { weapon ->
             armorList.forEach { armor ->
                 ringList.forEach { ring ->
-                    combinationList.add(EnergyBlastEquipmentCombinationVo.newInstance(weapon, armor, ring))
+                    combinationList.add(
+                        EnergyBlastEquipmentCombinationVo.newInstance(
+                            weapon,
+                            armor,
+                            ring
+                        )
+                    )
                 }
             }
         }
