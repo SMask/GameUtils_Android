@@ -46,25 +46,25 @@ data class EnergyBlastEquipmentCombinationVo(
     /**
      * 是否最佳
      */
-    fun isOptimal(affixExtraNum: Int): Boolean {
-        var extraNumForMax = 0
+    fun isOptimal(affixStatExtraNum: Int): Boolean {
         // 属性词条
+        var affixStatRequiredNumForMax = 0
         EnergyBlastAffixStat.entries.forEach { affix ->
-            val extraNum = getAffixExtraNumForMax(affix)
+            val requiredNum = getAffixRequiredNumForMax(affix)
             // 某一项词条溢出
-            if (extraNum < 0) {
+            if (requiredNum < 0) {
                 return false
             }
-            extraNumForMax += extraNum
-            if (extraNumForMax > affixExtraNum) {
+            affixStatRequiredNumForMax += requiredNum
+            if (affixStatRequiredNumForMax > affixStatExtraNum) {
                 return false
             }
         }
         // 技能词条
         EnergyBlastAffixSkill.entries.forEach { affix ->
-            val extraNum = getAffixExtraNumForMax(affix)
+            val requiredNum = getAffixRequiredNumForMax(affix)
             // 某一项词条溢出
-            if (extraNum < 0) {
+            if (requiredNum < 0) {
                 return false
             }
         }
@@ -74,7 +74,7 @@ data class EnergyBlastEquipmentCombinationVo(
     /**
      * 获取 词条达到最大值还需要的额外数量
      */
-    fun getAffixExtraNumForMax(affix: IEnergyBlastAffix): Int {
+    fun getAffixRequiredNumForMax(affix: IEnergyBlastAffix): Int {
         if (affix.max == Int.MAX_VALUE) {
             return 0
         }

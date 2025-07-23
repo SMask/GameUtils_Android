@@ -708,13 +708,13 @@ fun EnergyBlastCombinationAffixInfo(
                     horizontalArrangement = Arrangement.spacedBy(Dimen.padding / 2)
                 ) {
                     // 词条需要额外补充的数量
-                    val extraNum = combination.getAffixExtraNumForMax(affix)
-                    if (extraNum > 0) {
+                    val requiredNum = combination.getAffixRequiredNumForMax(affix)
+                    if (requiredNum > 0) {
                         Text(
                             style = Style.TextStyle.CONTENT,
                             color = Color.Red,
                             fontSize = 12.sp,
-                            text = extraNum.toString()
+                            text = requiredNum.toString()
                         )
                     }
                     // 词条当前属性
