@@ -4,6 +4,7 @@ import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentCombinationV
 
 /**
  * 装备组合 Comparator
+ * 主要是依靠技能词条顺序
  *
  * Create by lishilin on 2025-06-18
  */
@@ -55,6 +56,15 @@ class EnergyBlastEquipmentCombinationComparator : Comparator<EnergyBlastEquipmen
         val leftAffixMap = leftData.affixMap
         val rightAffixMap = rightData.affixMap
 
+        // 比较词条总数
+        val leftAffixNum = EnergyBlastAffixSkill.entries.count { leftAffixMap.containsKey(it) }
+        val rightAffixNum = EnergyBlastAffixSkill.entries.count { rightAffixMap.containsKey(it) }
+        if (leftAffixNum != rightAffixNum) {
+            // 词条总数不同，按词条总数排序
+            return rightAffixNum - leftAffixNum
+        }
+
+        // 比较 P0
         val leftAffixNumP0 = affixListP0.count { leftAffixMap.containsKey(it) }
         val rightAffixNumP0 = affixListP0.count { rightAffixMap.containsKey(it) }
         if (leftAffixNumP0 != rightAffixNumP0) {
@@ -71,6 +81,7 @@ class EnergyBlastEquipmentCombinationComparator : Comparator<EnergyBlastEquipmen
             return 1
         }
 
+        // 比较 P1
         val leftAffixNumP1 = affixListP1.count { leftAffixMap.containsKey(it) }
         val rightAffixNumP1 = affixListP1.count { rightAffixMap.containsKey(it) }
         if (leftAffixNumP1 != rightAffixNumP1) {
@@ -87,6 +98,7 @@ class EnergyBlastEquipmentCombinationComparator : Comparator<EnergyBlastEquipmen
             return 1
         }
 
+        // 比较 P2
         val leftAffixNumP2 = affixListP2.count { leftAffixMap.containsKey(it) }
         val rightAffixNumP2 = affixListP2.count { rightAffixMap.containsKey(it) }
         if (leftAffixNumP2 != rightAffixNumP2) {
