@@ -30,7 +30,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
 
     private val spName = "energy_blast"
     private val keyEquipmentList = "equipment_list"
-    private val keyExtraAffixNum = "extra_affix_num"
+    private val keyAffixStatExtraNum = "extra_affix_num"
 
     private val _equipmentList = mutableStateListOf<EnergyBlastEquipmentVo>()
     val equipmentList: List<EnergyBlastEquipmentVo> get() = _equipmentList
@@ -52,21 +52,21 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     }
 
     init {
-        loadList()
-        loadExtraAffixNum()
+        loadEquipmentList()
+        loadAffixStatExtraNum()
     }
 
     fun addEquipment(equipment: EnergyBlastEquipmentVo) {
         EnergyBlastConfig.lastAddType = equipment.type
         _equipmentList.add(equipment)
-        transformList()
-        saveList()
+        transformEquipmentList()
+        saveEquipmentList()
     }
 
     fun removeEquipment(equipment: EnergyBlastEquipmentVo) {
         _equipmentList.removeAll { it.id == equipment.id }
-        convertList()
-        saveList()
+        convertEquipmentList()
+        saveEquipmentList()
     }
 
     fun updateEquipment(equipment: EnergyBlastEquipmentVo) {
@@ -74,19 +74,19 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         if (index >= 0) {
             _equipmentList[index] = equipment
         }
-        transformList()
-        saveList()
+        transformEquipmentList()
+        saveEquipmentList()
     }
 
-    fun addExtraAffixNum() {
+    fun addAffixStatExtraNum() {
         _affixExtraNum.intValue += 1
-        saveExtraAffixNum()
+        saveAffixStatExtraNum()
     }
 
-    fun minusExtraAffixNum() {
+    fun minusAffixStatExtraNum() {
         if (_affixExtraNum.intValue > 0) {
             _affixExtraNum.intValue -= 1
-            saveExtraAffixNum()
+            saveAffixStatExtraNum()
         }
     }
 
@@ -148,16 +148,16 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
 
     /************************************************************ S 数据转换 ************************************************************/
 
-    private fun transformList() {
-        sortList()
-        convertList()
+    private fun transformEquipmentList() {
+        sortEquipmentList()
+        convertEquipmentList()
     }
 
-    private fun sortList() {
+    private fun sortEquipmentList() {
         _equipmentList.sortWith(EnergyBlastEquipmentComparator())
     }
 
-    private fun convertList() {
+    private fun convertEquipmentList() {
         var indexOffset = 0 // 下标偏移
         _equipmentList.forEachIndexed { index, equipment ->
             // 行、列
@@ -177,7 +177,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
 
     /************************************************************ S 数据存储 ************************************************************/
 
-    private fun loadList() {
+    private fun loadEquipmentList() {
         if (isPreview) {
             return
         }
@@ -188,7 +188,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         }
     }
 
-    private fun saveList() {
+    private fun saveEquipmentList() {
         if (isPreview) {
             return
         }
@@ -197,19 +197,19 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         }
     }
 
-    private fun loadExtraAffixNum() {
+    private fun loadAffixStatExtraNum() {
         if (isPreview) {
             return
         }
-        _affixExtraNum.intValue = sharedPreferences.getInt(keyExtraAffixNum, 0)
+        _affixExtraNum.intValue = sharedPreferences.getInt(keyAffixStatExtraNum, 0)
     }
 
-    private fun saveExtraAffixNum() {
+    private fun saveAffixStatExtraNum() {
         if (isPreview) {
             return
         }
         sharedPreferences.edit {
-            putInt(keyExtraAffixNum, _affixExtraNum.intValue)
+            putInt(keyAffixStatExtraNum, _affixExtraNum.intValue)
         }
     }
 
