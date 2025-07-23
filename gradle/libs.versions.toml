@@ -1,15 +1,15 @@
 [versions]
-agp = "8.10.1"
-kotlin = "2.1.0"
+agp = "8.11.1"
+kotlin = "2.2.0"
 coreKtx = "1.16.0"
-lifecycleRuntimeKtx = "2.9.1"
+lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
-composeBom = "2025.06.00"
-lifecycleViewmodelCompose = "2.9.1"
-runtimeLivedata = "1.8.2"
+composeBom = "2025.07.00"
+lifecycleViewmodelCompose = "2.9.2"
+runtimeLivedata = "1.8.3"
 
 # 三方 SDK
-gsonVersion = "2.11.0"
+gsonVersion = "2.13.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,4 +31,3 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gsonVersi
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
