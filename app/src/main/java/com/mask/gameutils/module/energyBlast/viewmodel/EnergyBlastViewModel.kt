@@ -31,12 +31,16 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     private val spName = "energy_blast"
     private val keyEquipmentList = "equipment_list"
     private val keyAffixStatExtraNum = "affix_stat_extra_num"
+    private val keyAffixSkillRequiredNum = "affix_skill_required_num"
 
     private val _equipmentList = mutableStateListOf<EnergyBlastEquipmentVo>()
     val equipmentList: List<EnergyBlastEquipmentVo> get() = _equipmentList
 
     private val _affixStatExtraNum = mutableIntStateOf(0)
     val affixStatExtraNum: Int get() = _affixStatExtraNum.intValue
+
+    private val _affixSkillRequiredNum = mutableIntStateOf(0)
+    val affixSkillRequiredNum: Int get() = _affixSkillRequiredNum.intValue
 
     private val _combinationList = mutableStateListOf<EnergyBlastEquipmentCombinationVo>()
     val combinationList: List<EnergyBlastEquipmentCombinationVo> get() = _combinationList
@@ -54,6 +58,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     init {
         loadEquipmentList()
         loadAffixStatExtraNum()
+        loadAffixSkillRequiredNum()
     }
 
     fun addEquipment(equipment: EnergyBlastEquipmentVo) {
@@ -87,6 +92,18 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         if (_affixStatExtraNum.intValue > 0) {
             _affixStatExtraNum.intValue -= 1
             saveAffixStatExtraNum()
+        }
+    }
+
+    fun addAffixSkillRequiredNum() {
+        _affixSkillRequiredNum.intValue += 1
+        saveAffixSkillRequiredNum()
+    }
+
+    fun minusAffixSkillRequiredNum() {
+        if (_affixSkillRequiredNum.intValue > 0) {
+            _affixSkillRequiredNum.intValue -= 1
+            saveAffixSkillRequiredNum()
         }
     }
 
@@ -135,7 +152,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         }
         // 计算最佳组合
         combinationList.removeAll { combination ->
-            !combination.isOptimal(_affixStatExtraNum.intValue)
+            !combination.isOptimal(_affixStatExtraNum.intValue, _affixSkillRequiredNum.intValue)
         }
         if (combinationList.isEmpty()) {
             ToastUtils.show(R.string.calculate_optimal_combination_null)
@@ -210,6 +227,22 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         }
         sharedPreferences.edit {
             putInt(keyAffixStatExtraNum, _affixStatExtraNum.intValue)
+        }
+    }
+
+    private fun loadAffixSkillRequiredNum() {
+        if (isPreview) {
+            return
+        }
+        _affixSkillRequiredNum.intValue = sharedPreferences.getInt(keyAffixSkillRequiredNum, 0)
+    }
+
+    private fun saveAffixSkillRequiredNum() {
+        if (isPreview) {
+            return
+        }
+        sharedPreferences.edit {
+            putInt(keyAffixSkillRequiredNum, _affixSkillRequiredNum.intValue)
         }
     }
 

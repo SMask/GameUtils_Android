@@ -21,6 +21,7 @@
 
     <!-- 某不稳定的气功波 -->
     <string name="energy_blast_affix_stat_extra_num">额外属性词条数量：</string>
+    <string name="energy_blast_affix_skill_required_num">需要技能词条数量：</string>
     <string name="energy_blast_affix_main_null">请选择戒指主词条</string>
     <string name="energy_blast_affix_null">请选择词条</string>
     <string name="energy_blast_delete_title">删除装备</string>
