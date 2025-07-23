@@ -153,43 +153,18 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
                 deleteEquipment = equipment
             }
         )
-        Row(
+        EnergyBlastOptionItem(
             modifier = Modifier
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                style = Style.TextStyle.CONTENT,
-                text = stringResource(R.string.energy_blast_affix_extra_num)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {
-                    viewModel.minusExtraAffixNum()
-                }
-            ) {
-                Icon(
-                    Icons.Default.KeyboardArrowDown,
-                    contentDescription = stringResource(R.string.minus)
-                )
+            title = stringResource(R.string.energy_blast_affix_extra_num),
+            content = viewModel.affixExtraNum.toString(),
+            onMinusClick = {
+                viewModel.minusExtraAffixNum()
+            },
+            onAddClick = {
+                viewModel.addExtraAffixNum()
             }
-            Text(
-                modifier = Modifier.widthIn(min = 24.dp),
-                style = Style.TextStyle.TITLE,
-                textAlign = TextAlign.Center,
-                text = viewModel.affixExtraNum.toString()
-            )
-            IconButton(
-                onClick = {
-                    viewModel.addExtraAffixNum()
-                }
-            ) {
-                Icon(
-                    Icons.Default.KeyboardArrowUp,
-                    contentDescription = stringResource(R.string.add)
-                )
-            }
-        }
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -326,6 +301,48 @@ fun EnergyBlastEquipmentItem(
                 color = item.textColor,
                 fontSize = 12.sp,
                 text = item.title
+            )
+        }
+    }
+}
+
+@Composable
+fun EnergyBlastOptionItem(
+    title: String,
+    content: String,
+    onMinusClick: () -> Unit,
+    onAddClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            style = Style.TextStyle.CONTENT,
+            text = title
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(
+            onClick = onMinusClick
+        ) {
+            Icon(
+                Icons.Default.KeyboardArrowDown,
+                contentDescription = stringResource(R.string.minus)
+            )
+        }
+        Text(
+            modifier = Modifier.widthIn(min = 24.dp),
+            style = Style.TextStyle.TITLE,
+            textAlign = TextAlign.Center,
+            text = content
+        )
+        IconButton(
+            onClick = onAddClick
+        ) {
+            Icon(
+                Icons.Default.KeyboardArrowUp,
+                contentDescription = stringResource(R.string.add)
             )
         }
     }
