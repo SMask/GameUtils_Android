@@ -4,7 +4,7 @@ import com.mask.gameutils.module.energyBlast.vo.EnergyBlastEquipmentCombinationV
 
 /**
  * 装备组合 Comparator
- * 主要是依靠技能词条顺序
+ * 主要是依靠技能词条数量
  *
  * Create by lishilin on 2025-06-18
  */

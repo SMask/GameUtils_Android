@@ -327,7 +327,7 @@ fun EnergyBlastOptionItem(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.height(30.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
