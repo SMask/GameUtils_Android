@@ -30,7 +30,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
 
     private val spName = "energy_blast"
     private val keyEquipmentList = "equipment_list"
-    private val keyAffixStatExtraNum = "extra_affix_num"
+    private val keyAffixStatExtraNum = "affix_stat_extra_num"
 
     private val _equipmentList = mutableStateListOf<EnergyBlastEquipmentVo>()
     val equipmentList: List<EnergyBlastEquipmentVo> get() = _equipmentList
@@ -169,7 +169,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
             if (equipment.type != _equipmentList.getOrNull(index - 1)?.type) {
                 indexOffset = index
             }
-            equipment.position = "${index - indexOffset + 1}"
+            equipment.positionText = "${index - indexOffset + 1}"
         }
     }
 
