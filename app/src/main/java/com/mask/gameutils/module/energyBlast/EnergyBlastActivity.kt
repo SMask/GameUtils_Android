@@ -157,7 +157,7 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
             modifier = Modifier
                 .fillMaxWidth(),
             title = stringResource(R.string.energy_blast_affix_stat_extra_num),
-            content = viewModel.affixExtraNum.toString(),
+            content = viewModel.affixStatExtraNum.toString(),
             onMinusClick = {
                 viewModel.minusAffixStatExtraNum()
             },

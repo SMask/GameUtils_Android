@@ -35,8 +35,8 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     private val _equipmentList = mutableStateListOf<EnergyBlastEquipmentVo>()
     val equipmentList: List<EnergyBlastEquipmentVo> get() = _equipmentList
 
-    private val _affixExtraNum = mutableIntStateOf(0)
-    val affixExtraNum: Int get() = _affixExtraNum.intValue
+    private val _affixStatExtraNum = mutableIntStateOf(0)
+    val affixStatExtraNum: Int get() = _affixStatExtraNum.intValue
 
     private val _combinationList = mutableStateListOf<EnergyBlastEquipmentCombinationVo>()
     val combinationList: List<EnergyBlastEquipmentCombinationVo> get() = _combinationList
@@ -79,13 +79,13 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     }
 
     fun addAffixStatExtraNum() {
-        _affixExtraNum.intValue += 1
+        _affixStatExtraNum.intValue += 1
         saveAffixStatExtraNum()
     }
 
     fun minusAffixStatExtraNum() {
-        if (_affixExtraNum.intValue > 0) {
-            _affixExtraNum.intValue -= 1
+        if (_affixStatExtraNum.intValue > 0) {
+            _affixStatExtraNum.intValue -= 1
             saveAffixStatExtraNum()
         }
     }
@@ -135,7 +135,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         }
         // 计算最佳组合
         combinationList.removeAll { combination ->
-            !combination.isOptimal(_affixExtraNum.intValue)
+            !combination.isOptimal(_affixStatExtraNum.intValue)
         }
         if (combinationList.isEmpty()) {
             ToastUtils.show(R.string.calculate_optimal_combination_null)
@@ -201,7 +201,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         if (isPreview) {
             return
         }
-        _affixExtraNum.intValue = sharedPreferences.getInt(keyAffixStatExtraNum, 0)
+        _affixStatExtraNum.intValue = sharedPreferences.getInt(keyAffixStatExtraNum, 0)
     }
 
     private fun saveAffixStatExtraNum() {
@@ -209,7 +209,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
             return
         }
         sharedPreferences.edit {
-            putInt(keyAffixStatExtraNum, _affixExtraNum.intValue)
+            putInt(keyAffixStatExtraNum, _affixStatExtraNum.intValue)
         }
     }
 
