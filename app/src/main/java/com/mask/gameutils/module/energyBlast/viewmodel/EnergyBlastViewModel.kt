@@ -136,6 +136,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
                 ringList.forEach { ring ->
                     combinationList.add(
                         EnergyBlastEquipmentCombinationVo.newInstance(
+                            _isAffixStatDamageReductionRequired.value,
                             weapon,
                             armor,
                             ring

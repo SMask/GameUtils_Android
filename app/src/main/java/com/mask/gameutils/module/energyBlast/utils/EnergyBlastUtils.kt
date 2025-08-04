@@ -48,7 +48,14 @@ object EnergyBlastUtils {
             val weapon = equipmentList[i + EnergyBlastEquipmentType.WEAPON.ordinal]
             val armor = equipmentList[i + EnergyBlastEquipmentType.ARMOR.ordinal]
             val ring = equipmentList[i + EnergyBlastEquipmentType.RING.ordinal]
-            combinationList.add(EnergyBlastEquipmentCombinationVo.newInstance(weapon, armor, ring))
+            combinationList.add(
+                EnergyBlastEquipmentCombinationVo.newInstance(
+                    true,
+                    weapon,
+                    armor,
+                    ring
+                )
+            )
         }
         val combinationListVM = viewModel.combinationList
         if (combinationListVM is MutableList<EnergyBlastEquipmentCombinationVo>) {

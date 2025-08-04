@@ -28,9 +28,22 @@ data class EnergyBlastEquipmentCombinationVo(
     val affixMap: Map<IEnergyBlastAffix, Int>,
 ) {
     companion object {
-        fun newInstance(vararg equipmentArr: EnergyBlastEquipmentVo): EnergyBlastEquipmentCombinationVo {
+        fun newInstance(
+            isAffixStatDamageReductionRequired: Boolean,
+            vararg equipmentArr: EnergyBlastEquipmentVo
+        ): EnergyBlastEquipmentCombinationVo {
             val equipmentList = equipmentArr.toList()
             val affixMap = TreeMap<IEnergyBlastAffix, Int>(EnergyBlastAffixComparator())
+
+            // 初始化必备词条
+            affixMap[EnergyBlastAffixStat.DODGE_RATE] = 0
+            if (isAffixStatDamageReductionRequired) {
+                affixMap[EnergyBlastAffixStat.DAMAGE_REDUCTION] = 0
+            }
+            affixMap[EnergyBlastAffixStat.ATTACK_SPEED] = 0
+            affixMap[EnergyBlastAffixStat.CRIT_RATE] = 0
+
+            // 把装备的词条添加到集合中
             equipmentList.forEach { equipment ->
                 equipment.affixList.forEach { affix ->
                     affixMap[affix] = affixMap.getOrDefault(affix, 0) + affix.value
