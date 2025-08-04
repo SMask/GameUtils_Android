@@ -48,7 +48,9 @@ data class EnergyBlastEquipmentCombinationVo(
      */
     fun isOptimal(affixStatExtraNum: Int, isAffixStatDamageReductionRequired: Boolean): Boolean {
         // 如果不需要减伤
-        if (!isAffixStatDamageReductionRequired && affixMap.containsKey(EnergyBlastAffixStat.DAMAGE_REDUCTION)) {
+        val affixStatDamageReductionValue =
+            affixMap.getOrDefault(EnergyBlastAffixStat.DAMAGE_REDUCTION, 0)
+        if (!isAffixStatDamageReductionRequired && affixStatDamageReductionValue > 0) {
             return false
         }
         // 属性词条
@@ -87,6 +89,7 @@ data class EnergyBlastEquipmentCombinationVo(
         if (affix.max == Int.MAX_VALUE) {
             return 0
         }
-        return (affix.max - affixMap.getOrDefault(affix, 0)) / affix.value
+        val currentValue = affixMap.getOrDefault(affix, 0)
+        return (affix.max - currentValue) / affix.value
     }
 }
