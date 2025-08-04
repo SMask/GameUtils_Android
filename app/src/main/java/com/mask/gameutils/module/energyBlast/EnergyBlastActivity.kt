@@ -740,6 +740,19 @@ fun EnergyBlastCombinationAffixInfo(
                     modifier = Modifier,
                     horizontalArrangement = Arrangement.spacedBy(Dimen.padding / 2)
                 ) {
+                    // 词条当前数量
+                    val isShowNum =
+                        affix is EnergyBlastAffixStat && affix !in EnergyBlastAffixStat.NECESSARY_LIST
+                    if (isShowNum) {
+                        val num = combination.getAffixNum(affix)
+                        Text(
+                            style = Style.TextStyle.CONTENT,
+                            color = Color(0xFF009900),
+                            fontSize = 12.sp,
+                            text = num.toString()
+                        )
+                    }
+
                     // 词条需要额外补充的数量
                     val requiredNum = combination.getAffixRequiredNumForMax(affix)
                     if (requiredNum > 0) {
@@ -750,11 +763,26 @@ fun EnergyBlastCombinationAffixInfo(
                             text = requiredNum.toString()
                         )
                     }
+
                     // 词条当前属性
+                    val valueStr = when (affix) {
+                        in EnergyBlastAffixStat.NECESSARY_LIST -> {
+                            value.toString().padStart(2, '0')
+                        }
+
+                        is EnergyBlastAffixStat -> {
+                            value.toString().padStart(3, '0')
+                        }
+
+                        else -> {
+                            value.toString()
+                        }
+                    }
                     Text(
+                        modifier = Modifier,
                         style = Style.TextStyle.CONTENT,
                         fontSize = 12.sp,
-                        text = value.toString()
+                        text = valueStr
                     )
                 }
             }

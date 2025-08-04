@@ -105,4 +105,12 @@ data class EnergyBlastEquipmentCombinationVo(
         val currentValue = affixMap.getOrDefault(affix, 0)
         return (affix.max - currentValue) / affix.value
     }
+
+    /**
+     * 获取 词条当前数量
+     */
+    fun getAffixNum(affix: IEnergyBlastAffix): Int {
+        val currentValue = affixMap.getOrDefault(affix, 0)
+        return currentValue / affix.value
+    }
 }
