@@ -46,7 +46,7 @@ data class EnergyBlastEquipmentCombinationVo(
     /**
      * 是否最佳
      */
-    fun isOptimal(affixStatExtraNum: Int, affixSkillRequiredNum: Int): Boolean {
+    fun isOptimal(affixStatExtraNum: Int): Boolean {
         // 属性词条
         var affixStatRequiredNumForMax = 0
         EnergyBlastAffixStat.entries.forEach { affix ->
@@ -62,11 +62,6 @@ data class EnergyBlastEquipmentCombinationVo(
             }
         }
         // 技能词条
-        val affixSkillNum = EnergyBlastAffixSkill.entries.count { affixMap.containsKey(it) }
-        // “已有技能词条数量”超出“需要的技能词条数量”
-        if (affixSkillNum > affixSkillRequiredNum) {
-            return false
-        }
         EnergyBlastAffixSkill.entries.forEach { affix ->
             val requiredNum = getAffixRequiredNumForMax(affix)
             // 某一项词条溢出

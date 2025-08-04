@@ -165,18 +165,6 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
                 viewModel.addAffixStatExtraNum()
             }
         )
-        EnergyBlastOptionItem(
-            modifier = Modifier
-                .fillMaxWidth(),
-            title = stringResource(R.string.energy_blast_affix_skill_required_num),
-            content = viewModel.affixSkillRequiredNum.toString(),
-            onMinusClick = {
-                viewModel.minusAffixSkillRequiredNum()
-            },
-            onAddClick = {
-                viewModel.addAffixSkillRequiredNum()
-            }
-        )
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
