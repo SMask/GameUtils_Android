@@ -40,6 +40,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -153,7 +154,7 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
                 deleteEquipment = equipment
             }
         )
-        EnergyBlastOptionItem(
+        EnergyBlastOptionItemNum(
             modifier = Modifier
                 .fillMaxWidth(),
             title = stringResource(R.string.energy_blast_affix_stat_extra_num),
@@ -163,6 +164,15 @@ fun EnergyBlastLayout(viewModel: EnergyBlastViewModel, modifier: Modifier = Modi
             },
             onAddClick = {
                 viewModel.addAffixStatExtraNum()
+            }
+        )
+        EnergyBlastOptionItemSwitch(
+            modifier = Modifier
+                .fillMaxWidth(),
+            title = stringResource(R.string.energy_blast_is_affix_stat_damage_reduction_required),
+            isChecked = viewModel.isAffixStatDamageReductionRequired,
+            onCheckedChange = { isChecked ->
+                viewModel.setAffixStatDamageReductionRequired(isChecked)
             }
         )
         Row(
@@ -307,7 +317,7 @@ fun EnergyBlastEquipmentItem(
 }
 
 @Composable
-fun EnergyBlastOptionItem(
+fun EnergyBlastOptionItemNum(
     title: String,
     content: String,
     onMinusClick: () -> Unit,
@@ -345,6 +355,29 @@ fun EnergyBlastOptionItem(
                 contentDescription = stringResource(R.string.add)
             )
         }
+    }
+}
+
+@Composable
+fun EnergyBlastOptionItemSwitch(
+    title: String,
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.height(30.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            style = Style.TextStyle.CONTENT,
+            text = title
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Switch(
+            checked = isChecked,
+            onCheckedChange = onCheckedChange
+        )
     }
 }
 

@@ -46,10 +46,18 @@ data class EnergyBlastEquipmentCombinationVo(
     /**
      * 是否最佳
      */
-    fun isOptimal(affixStatExtraNum: Int): Boolean {
+    fun isOptimal(affixStatExtraNum: Int, isAffixStatDamageReductionRequired: Boolean): Boolean {
+        // 如果不需要减伤
+        if (!isAffixStatDamageReductionRequired && affixMap.containsKey(EnergyBlastAffixStat.DAMAGE_REDUCTION)) {
+            return false
+        }
         // 属性词条
         var affixStatRequiredNumForMax = 0
-        EnergyBlastAffixStat.entries.forEach { affix ->
+        for (affix in EnergyBlastAffixStat.entries) {
+            // 如果不需要减伤
+            if (!isAffixStatDamageReductionRequired && affix == EnergyBlastAffixStat.DAMAGE_REDUCTION) {
+                continue
+            }
             val requiredNum = getAffixRequiredNumForMax(affix)
             // 某一项词条溢出
             if (requiredNum < 0) {

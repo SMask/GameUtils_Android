@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.GsonBuilder
@@ -31,12 +32,16 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     private val spName = "energy_blast"
     private val keyEquipmentList = "equipment_list"
     private val keyAffixStatExtraNum = "affix_stat_extra_num"
+    private val keyIsAffixStatDamageReductionRequired = "is_affix_stat_damage_reduction_required"
 
     private val _equipmentList = mutableStateListOf<EnergyBlastEquipmentVo>()
     val equipmentList: List<EnergyBlastEquipmentVo> get() = _equipmentList
 
     private val _affixStatExtraNum = mutableIntStateOf(0)
     val affixStatExtraNum: Int get() = _affixStatExtraNum.intValue
+
+    private val _isAffixStatDamageReductionRequired = mutableStateOf(true)
+    val isAffixStatDamageReductionRequired: Boolean get() = _isAffixStatDamageReductionRequired.value
 
     private val _combinationList = mutableStateListOf<EnergyBlastEquipmentCombinationVo>()
     val combinationList: List<EnergyBlastEquipmentCombinationVo> get() = _combinationList
@@ -54,6 +59,7 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
     init {
         loadEquipmentList()
         loadAffixStatExtraNum()
+        loadAffixStatDamageReductionRequired()
     }
 
     fun addEquipment(equipment: EnergyBlastEquipmentVo) {
@@ -88,6 +94,11 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
             _affixStatExtraNum.intValue -= 1
             saveAffixStatExtraNum()
         }
+    }
+
+    fun setAffixStatDamageReductionRequired(isChecked: Boolean) {
+        _isAffixStatDamageReductionRequired.value = isChecked
+        saveAffixStatDamageReductionRequired()
     }
 
     /**
@@ -135,7 +146,10 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         }
         // 计算最佳组合
         combinationList.removeAll { combination ->
-            !combination.isOptimal(_affixStatExtraNum.intValue)
+            !combination.isOptimal(
+                _affixStatExtraNum.intValue,
+                _isAffixStatDamageReductionRequired.value
+            )
         }
         if (combinationList.isEmpty()) {
             ToastUtils.show(R.string.calculate_optimal_combination_null)
@@ -210,6 +224,26 @@ class EnergyBlastViewModel(private val application: Application) : AndroidViewMo
         }
         sharedPreferences.edit {
             putInt(keyAffixStatExtraNum, _affixStatExtraNum.intValue)
+        }
+    }
+
+    private fun loadAffixStatDamageReductionRequired() {
+        if (isPreview) {
+            return
+        }
+        _isAffixStatDamageReductionRequired.value =
+            sharedPreferences.getBoolean(keyIsAffixStatDamageReductionRequired, true)
+    }
+
+    private fun saveAffixStatDamageReductionRequired() {
+        if (isPreview) {
+            return
+        }
+        sharedPreferences.edit {
+            putBoolean(
+                keyIsAffixStatDamageReductionRequired,
+                _isAffixStatDamageReductionRequired.value
+            )
         }
     }
 
