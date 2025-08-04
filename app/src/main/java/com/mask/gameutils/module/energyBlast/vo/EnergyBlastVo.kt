@@ -36,12 +36,12 @@ data class EnergyBlastEquipmentCombinationVo(
             val affixMap = TreeMap<IEnergyBlastAffix, Int>(EnergyBlastAffixComparator())
 
             // 初始化必备词条
-            affixMap[EnergyBlastAffixStat.DODGE_RATE] = 0
-            if (isAffixStatDamageReductionRequired) {
-                affixMap[EnergyBlastAffixStat.DAMAGE_REDUCTION] = 0
+            for (affix in EnergyBlastAffixStat.NECESSARY_LIST) {
+                if (!isAffixStatDamageReductionRequired && affix == EnergyBlastAffixStat.DAMAGE_REDUCTION) {
+                    continue
+                }
+                affixMap[affix] = 0
             }
-            affixMap[EnergyBlastAffixStat.ATTACK_SPEED] = 0
-            affixMap[EnergyBlastAffixStat.CRIT_RATE] = 0
 
             // 把装备的词条添加到集合中
             equipmentList.forEach { equipment ->

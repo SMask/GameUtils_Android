@@ -71,6 +71,11 @@ enum class EnergyBlastAffixStat(
     FIRE_DAMAGE("火系伤害", 50, Int.MAX_VALUE),
     WOOD_DAMAGE("木系伤害", 50, Int.MAX_VALUE)
     ;
+
+    companion object {
+        // 必备集合
+        val NECESSARY_LIST = listOf(DODGE_RATE, DAMAGE_REDUCTION, ATTACK_SPEED, CRIT_RATE)
+    }
 }
 
 /**
